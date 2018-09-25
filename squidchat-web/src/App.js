@@ -33,7 +33,8 @@ class App extends Component {
         Username:"Anonymous"
       },
       Users:new Array(),
-      Typing:false
+      Typing:false,
+      ShowOptions:false
     }
   }
 
@@ -64,25 +65,10 @@ class App extends Component {
           <div className="LeftPanel">
             <MessageList Messages={this.state.Messages}/>
             <ChatInput Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
-            <Paper className="OptionsPaper" elevation={1}>
-              <Typography variant="headline" component="h3">
-                Options
-              </Typography>
-              <Typography component="p">
-                <List>
-                  <ListItem divider>
-                    <TextField className="LongText" value={this.state.User.Username}>
-                    </TextField>
-                    <Button className="PushLeft" variant="outlined" color="primary">
-                      Save
-                    </Button>
-                  </ListItem>
-                  <ListSubHeader>
-                    In Room
-                  </ListSubHeader>
-                </List>
-              </Typography>
-            </Paper>
+
+            {
+              this.state.ShowOptions && this.ReturnOptions()
+            }
           </div>
         </div>
       </div>
@@ -108,6 +94,34 @@ class App extends Component {
         Username:value
       }
     })
+  }
+
+  ReturnOptions = () => {
+    return(
+      <Paper className="OptionsPaper" elevation={1}>
+        <Typography variant="headline" component="h3">
+          Options
+        </Typography>
+        <Typography component="p">
+          <List>
+            <ListItem divider>
+              <TextField className="LongText" value={this.state.User.Username} onChange={
+                (event) => {
+                  this.UpdateUsername(event.target.value)
+                }
+              }>
+              </TextField>
+              <Button className="PushLeft" variant="outlined" color="primary">
+                Save
+              </Button>
+            </ListItem>
+            <ListSubHeader>
+              In Room
+            </ListSubHeader>
+          </List>
+        </Typography>
+      </Paper>
+    )
   }
 }
 
