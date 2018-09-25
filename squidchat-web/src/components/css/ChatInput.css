@@ -1,0 +1,21 @@
+.ChatInput{
+    border-top:solid 1px #BFBFBF;
+    position:fixed;
+    bottom:0px;
+    width:100%;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:10px;
+    background:#FFF;
+    z-index:999;
+}
+
+.ChatInput input{
+    margin-left:10px;
+    width:90%;
+}
+
+.ChatInput button{
+    position:fixed;
+    right:10px;
+}
