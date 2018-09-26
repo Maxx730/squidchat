@@ -16,3 +16,10 @@
 .scrollElem{
     height:100px;
 }
+
+.MessageDate{
+    position:absolute;
+    bottom:0px;
+    font-size:10px!important;
+    left:50px;
+}

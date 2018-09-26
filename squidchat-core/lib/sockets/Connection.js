@@ -7,6 +7,7 @@ let User = function(id){
 
 let Connection = function(io){
     this.Users = new Array();
+    this.Messages = new Array();
 
     console.log("INITIALIZED CONNECTION SOCKET");
 
@@ -20,6 +21,8 @@ let Connection = function(io){
 
         socket.on('Test',(msg) => {
             io.emit('Message Sent',msg)
+            this.Messages.push(msg);
+            console.log(this.Messages)
         });
 
         socket.on('ToggleType',(val) => {

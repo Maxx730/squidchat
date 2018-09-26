@@ -8,6 +8,7 @@ import './css/MessageList.css'
 import ThumbUpRounded from '@material-ui/icons/ThumbUpRounded'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
+import ListItemText from '@material-ui/core/ListItemText'
 
 class MessageList extends Component{
     constructor(props){
@@ -53,8 +54,23 @@ class MessageList extends Component{
                                         <Message Message={message.Message}>
 
                                         </Message>
-                                        <IconButton>
-                                            <ThumbUpRounded/>
+                                        <ListItemText className="MessageDate">
+                                            {
+                                                message.Date
+                                            }
+                                        </ListItemText>
+                                        {
+                                            message.Votes
+                                        }
+                                        <IconButton onClick = {
+                                                () => {
+                                                    this.props.Vote(message)
+                                                }
+                                            }>
+
+                                            {
+                                                message.VotedBy.indexOf(this.props.RootUser.UserId) >= 0 ? <ThumbUpRounded color="primary"/> : <ThumbUpRounded/>
+                                            }
                                         </IconButton>
                                     </ListItem>
                                 )

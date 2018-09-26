@@ -89,7 +89,7 @@ class App extends Component {
         <div className="MainCon">
           <div className="LeftPanel">
             {
-              this.state.LoadedUser && <MessageList ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
+              this.state.LoadedUser && <MessageList RootUser={this.state.User} Vote={this.AddVote} ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
             }
             {
               this.state.LoadedUser && <ChatInput ToggleDialog={this.ToggleDialog.bind(this)} Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
@@ -125,14 +125,16 @@ class App extends Component {
 
   EmitMessage = (value) => {
     this.state.Connector.SendTest({
+      _id:this.state.Messages.length + 1,
       User:this.state.User,
       Message:value,
       Votes:0,
       VotedBy:new Array(),
-      Date:new Date()
+      Date:new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getFullYear()
     });
 
     window.scrollTo(0,this.state.ScrollRef.current.offsetTop + 250)
+    console.log(this.state)
   }
 
   ToggleTyping = (value) => {
@@ -172,6 +174,23 @@ class App extends Component {
   ToggleSettings = () =>{
     this.setState({
       SettingsOpen:!this.state.SettingsOpen
+    })
+  }
+
+  AddVote = (message) => {
+    let NewMessages = this.state.Messages;
+
+    for(let i = 0;i < NewMessages.length;i++){
+      if(NewMessages[i]._id == message._id){
+        if(NewMessages[i].VotedBy.indexOf(this.state.User.UserId) == -1){
+          NewMessages[i].Votes++;
+          NewMessages[i].VotedBy.push(this.state.User.UserId)
+        }
+      }
+    }
+
+    this.setState({
+      Messages:NewMessages
     })
   }
 
