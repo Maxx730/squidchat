@@ -125,7 +125,7 @@ class App extends Component {
 
   EmitMessage = (value) => {
     this.state.Connector.SendTest({
-      _id:this.state.Messages.length + 1,
+      _id:Math.floor(Math.random() * 10000),
       User:this.state.User,
       Message:value,
       Votes:0,
@@ -144,12 +144,15 @@ class App extends Component {
   }
 
   UpdateUsername = (value) => {
+    let newUser = {
+      UserId:this.state.User.UserId,
+      Username:value
+    }
     this.setState({
-      User:{
-        UserId:this.state.User.UserId,
-        Username:value
-      }
+      User:newUser
     })
+
+    this.state.Connector.EmitNameChange(newUser);
   }
 
   SetUsers = (Users) => {
@@ -185,6 +188,7 @@ class App extends Component {
         if(NewMessages[i].VotedBy.indexOf(this.state.User.UserId) == -1){
           NewMessages[i].Votes++;
           NewMessages[i].VotedBy.push(this.state.User.UserId)
+          this.state.Connector.EmitVote(NewMessages[i])
         }
       }
     }

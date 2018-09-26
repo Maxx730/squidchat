@@ -12,7 +12,7 @@ let Connection = function(io){
     console.log("INITIALIZED CONNECTION SOCKET");
 
     io.on('connection',(socket) => {
-
+        io.emit('Message Sent',this.Messages)
         //Create the new user once someone has connected and add them to the user array.
         let NewUser = new User(socket.id);
         this.Users.push(NewUser);
@@ -20,9 +20,8 @@ let Connection = function(io){
         io.to(socket.id).emit('InitializeUser',NewUser);
 
         socket.on('Test',(msg) => {
-            io.emit('Message Sent',msg)
             this.Messages.push(msg);
-            console.log(this.Messages)
+            io.emit('Message Sent',this.Messages)
         });
 
         socket.on('ToggleType',(val) => {
@@ -30,14 +29,32 @@ let Connection = function(io){
         })
 
         socket.on('UpdateUsername',(User) => {
+            console.log(User);
             for(let i = 0;i < this.Users.length;i++){
                 if(this.Users[i].UserId === User.UserId){
                     this.Users[i].Username = User.Username
                     io.emit('AllUsers',this.Users);
                 }
             }
+
+            console.log(this.Messages)
+            for(let i = 0;i < this.Messages.length;i++){
+                if(this.Messages[i].User.UserId == User.UserId){
+                    this.Messages[i].User = User;
+                    io.emit('Message Sent',this.Messages)
+                }
+            }
         })
 
+        socket.on('UpdateMessageVote',(Message) => {
+            for(let i = 0;i < this.Messages.length;i++){
+                if(this.Messages[i]._id == Message._id){
+                    this.Messages[i] = Message
+                }
+            }
+
+            io.emit('Message Sent',this.Messages)
+        })
 
         io.emit('JoinedUser',NewUser);
         io.emit('AllUsers',this.Users);
@@ -55,10 +72,6 @@ let Connection = function(io){
     });
 
     io.listen(3001);
-}
-
-Connection.prototype.AddUser = () => {
-
 }
 
 module.exports = Connection;

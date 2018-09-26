@@ -14,7 +14,7 @@ let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallbac
     })
 
     socket.on('Message Sent',(msg) => {
-        this.Messages.push(msg)
+        this.Messages = msg;
         UpdateCallback(this.Messages)
     })
 
@@ -59,6 +59,10 @@ Connector.prototype.ShowTyping = (value) => {
 
 Connector.prototype.EmitNameChange = (User) => {
     socket.emit('UpdateUsername',User);
+}
+
+Connector.prototype.EmitVote = (message) => {
+    socket.emit('UpdateMessageVote',message);
 }
 
 export default Connector
