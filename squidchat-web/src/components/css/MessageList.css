@@ -12,3 +12,7 @@
     max-width:300px;
     text-overflow: ellipsis!important;
 }
+
+.scrollElem{
+    height:100px;
+}

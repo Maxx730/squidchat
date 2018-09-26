@@ -39,7 +39,8 @@ class App extends Component {
       Users:new Array(),
       Typing:false,
       ShowOptions:false,
-      LoadedUser:false
+      LoadedUser:false,
+      ScrollRef:React.createRef()
     }
   }
 
@@ -80,7 +81,7 @@ class App extends Component {
         <div className="MainCon">
           <div className="LeftPanel">
             {
-              this.state.LoadedUser && <MessageList Messages={this.state.Messages}/>
+              this.state.LoadedUser && <MessageList ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
             }
             {
               this.state.LoadedUser && <ChatInput Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
@@ -103,7 +104,7 @@ class App extends Component {
       Date:new Date()
     });
 
-    console.log(this.state);
+    window.scrollTo(0,this.state.ScrollRef.current.offsetTop + 250)
   }
 
   ToggleTyping = (value) => {

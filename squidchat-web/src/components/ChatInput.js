@@ -49,9 +49,20 @@ class ChatInput extends Component{
                     this.state.MessageInput
                 }
                 onKeyDown={
-                  () => {
-                      this.props.Toggle(true);
-                      this.props.Connector.ShowTyping(true);
+                  (event) => {
+                      if(event.key === "Enter"){
+                        if(this.state.MessageInput != ""){
+                            this.props.Sender(this.state.MessageInput)
+                            this.setState({
+                                MessageInput:""
+                            })
+                        }else{
+                            alert("Message cannot be blank.")
+                        }
+                      }else{
+                        this.props.Toggle(true);
+                        this.props.Connector.ShowTyping(true);
+                      }
                   }
                 }
                 onKeyUp={
