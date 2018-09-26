@@ -11,6 +11,13 @@ let Connection = function(io){
     console.log("INITIALIZED CONNECTION SOCKET");
 
     io.on('connection',(socket) => {
+
+        //Create the new user once someone has connected and add them to the user array.
+        let NewUser = new User(socket.id);
+        this.Users.push(NewUser);
+        //Send the new User object back to that user.
+        io.to(socket.id).emit('InitializeUser',NewUser);
+
         socket.on('Test',(msg) => {
             io.emit('Message Sent',msg)
         });
@@ -19,9 +26,18 @@ let Connection = function(io){
             io.emit('ChangeTyping',val);
         })
 
-        let NewUser = new User(socket.id);
-        this.Users.push(NewUser);
+        socket.on('UpdateUsername',(User) => {
+            for(let i = 0;i < this.Users.length;i++){
+                if(this.Users[i].UserId === User.UserId){
+                    this.Users[i].Username = User.Username
+                    io.emit('AllUsers',this.Users);
+                }
+            }
+        })
+
+
         io.emit('JoinedUser',NewUser);
+        io.emit('AllUsers',this.Users);
 
         socket.on('disconnect',() => {
             for(let i = 0;i < this.Users.length;i++){
@@ -29,6 +45,7 @@ let Connection = function(io){
                     let User = Users[i];
                     this.Users.splice(i,1);
                     io.emit('UserDisconnected',User)
+                    io.emit('AllUsers',this.Users)
                 }
             }
         })

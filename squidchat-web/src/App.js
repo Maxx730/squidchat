@@ -21,6 +21,8 @@ import Connector from './api/Connector'
 //import components
 import ChatInput from './components/ChatInput'
 import MessageList from './components/MessageList'
+import UserList from './components/UserList'
+import { Avatar } from '@material-ui/core';
 
 class App extends Component {
 
@@ -28,7 +30,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      Connector:new Connector(this.updateMessages,this.ToggleTyping),
+      Connector:new Connector(this.updateMessages,this.ToggleTyping,this.SetUsers,this.SetUser),
       Messages:new Array(),
       User:{
         UserId:0,
@@ -36,7 +38,8 @@ class App extends Component {
       },
       Users:new Array(),
       Typing:false,
-      ShowOptions:false
+      ShowOptions:false,
+      LoadedUser:false
     }
   }
 
@@ -76,9 +79,12 @@ class App extends Component {
         </AppBar>
         <div className="MainCon">
           <div className="LeftPanel">
-            <MessageList Messages={this.state.Messages}/>
-            <ChatInput Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
-
+            {
+              this.state.LoadedUser && <MessageList Messages={this.state.Messages}/>
+            }
+            {
+              this.state.LoadedUser && <ChatInput Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
+            }
             {
               this.state.ShowOptions && this.ReturnOptions()
             }
@@ -91,8 +97,13 @@ class App extends Component {
   EmitMessage = (value) => {
     this.state.Connector.SendTest({
       User:this.state.User,
-      Message:value
+      Message:value,
+      Votes:0,
+      VotedBy:new Array(),
+      Date:new Date()
     });
+
+    console.log(this.state);
   }
 
   ToggleTyping = (value) => {
@@ -104,8 +115,22 @@ class App extends Component {
   UpdateUsername = (value) => {
     this.setState({
       User:{
+        UserId:this.state.User.UserId,
         Username:value
       }
+    })
+  }
+
+  SetUsers = (Users) => {
+    this.setState({
+      Users:Users
+    })
+  }
+
+  SetUser = (User) => {
+    this.setState({
+      User:User,
+      LoadedUser:true
     })
   }
 
@@ -113,7 +138,9 @@ class App extends Component {
     return(
       <Paper className="OptionsPaper" elevation={1}>
         <Typography variant="headline" component="h3">
-          Options
+          {
+            this.state.User.Username
+          }
         </Typography>
         <Typography component="p">
           <List>
@@ -124,13 +151,20 @@ class App extends Component {
                 }
               }>
               </TextField>
-              <Button className="PushLeft" variant="outlined" color="primary">
+              <Button onClick = {
+                () => {
+                  this.state.Connector.EmitNameChange(this.state.User);
+                }
+              } className="PushLeft" variant="outlined" color="primary">
                 Save
               </Button>
             </ListItem>
             <ListSubHeader>
               In Room
             </ListSubHeader>
+            <UserList Users={this.state.Users}>
+
+            </UserList>
           </List>
         </Typography>
       </Paper>

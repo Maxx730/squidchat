@@ -1,12 +1,17 @@
 import openSocket from 'socket.io-client';
 const socket = openSocket("http://localhost:3001");
 
-let Connector = function(UpdateCallback,TypingCallBack){
+let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallback){
     this.Messages = new Array();
+    this.Users = new Array();
     //Connect to the server.
     socket.emit('connect',(socket) => {
 
     });
+
+    socket.on('InitializeUser',(User) => {
+        UserCallback(User)
+    })
 
     socket.on('Message Sent',(msg) => {
         this.Messages.push(msg)
@@ -17,6 +22,10 @@ let Connector = function(UpdateCallback,TypingCallBack){
         TypingCallBack(val);
     })
 
+    socket.on('AllUsers',(Users) => {
+        UsersCallback(Users)
+    })
+
     socket.on('JoinedUser',(user) => {
         this.Messages.push({
             User:{
@@ -24,6 +33,8 @@ let Connector = function(UpdateCallback,TypingCallBack){
             },
             Message:user.Username + " has connected!"
         });
+        this.Users.push(user);
+        UsersCallback(this.Users);
         UpdateCallback(this.Messages);
     })
 
@@ -44,6 +55,10 @@ Connector.prototype.SendTest = (values) => {
 
 Connector.prototype.ShowTyping = (value) => {
     socket.emit('ToggleType',value);
+}
+
+Connector.prototype.EmitNameChange = (User) => {
+    socket.emit('UpdateUsername',User);
 }
 
 export default Connector
