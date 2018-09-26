@@ -7,8 +7,10 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import IconButton from '@material-ui/core/IconButton'
 import ListItemText from '@material-ui/core/ListItemText'
 import KeyboardRounded from '@material-ui/icons/KeyboardRounded'
+import SettingsRounded from '@material-ui/icons/SettingsRounded'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import ListSubHeader from '@material-ui/core/ListSubheader'
@@ -52,13 +54,24 @@ class App extends Component {
     return (
       <div className="App">
         <AppBar position="static" color="primary">
-          <Toolbar variant="dense">
+          <Toolbar>
             <Typography variant="title" color="inherit">
               SquidChat
             </Typography>
             {
               this.state.Typing && <KeyboardRounded className="TypingIndicator"></KeyboardRounded>
             }
+            <IconButton className="SettingButtonRight" onClick={
+              () => {
+                this.setState({
+                  ShowOptions:!this.state.ShowOptions
+                })
+              }
+            }>
+              <SettingsRounded color="secondary">
+
+              </SettingsRounded>
+            </IconButton>
           </Toolbar>
         </AppBar>
         <div className="MainCon">

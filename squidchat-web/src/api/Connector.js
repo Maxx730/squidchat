@@ -9,13 +9,32 @@ let Connector = function(UpdateCallback,TypingCallBack){
     });
 
     socket.on('Message Sent',(msg) => {
-        console.log(msg)
         this.Messages.push(msg)
         UpdateCallback(this.Messages)
     })
 
     socket.on('ChangeTyping',(val) => {
         TypingCallBack(val);
+    })
+
+    socket.on('JoinedUser',(user) => {
+        this.Messages.push({
+            User:{
+                Username:"System"
+            },
+            Message:user.Username + " has connected!"
+        });
+        UpdateCallback(this.Messages);
+    })
+
+    socket.on('UserDisconnected',(user) => {
+        this.Messages.push({
+            User:{
+                Username:"System"
+            },
+            Message:user.Username + " has disconnected!"
+        });
+        UpdateCallback(this.Messages);
     })
 }
 

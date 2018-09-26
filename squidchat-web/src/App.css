@@ -25,3 +25,8 @@
   margin-left:7px!important;
   float:right!important;
 }
+
+.SettingButtonRight{
+  right:8px!important;
+  position:absolute!important;
+}
