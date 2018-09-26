@@ -57,7 +57,7 @@ class ChatInput extends Component{
                                 MessageInput:""
                             })
                         }else{
-                            alert("Message cannot be blank.")
+                            this.props.ToggleDialog()
                         }
                       }else{
                         this.props.Toggle(true);

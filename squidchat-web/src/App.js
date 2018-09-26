@@ -14,6 +14,11 @@ import SettingsRounded from '@material-ui/icons/SettingsRounded'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import ListSubHeader from '@material-ui/core/ListSubheader'
+import Dialog from '@material-ui/core/Dialog'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogActions from '@material-ui/core/DialogActions'
 
 //import connections
 import Connector from './api/Connector'
@@ -22,6 +27,7 @@ import Connector from './api/Connector'
 import ChatInput from './components/ChatInput'
 import MessageList from './components/MessageList'
 import UserList from './components/UserList'
+import SettingsDialog from './components/SettingsDialog'
 import { Avatar } from '@material-ui/core';
 
 class App extends Component {
@@ -40,7 +46,9 @@ class App extends Component {
       Typing:false,
       ShowOptions:false,
       LoadedUser:false,
-      ScrollRef:React.createRef()
+      ScrollRef:React.createRef(),
+      AlertDialog:false,
+      SettingsOpen:false
     }
   }
 
@@ -68,11 +76,11 @@ class App extends Component {
             <IconButton className="SettingButtonRight" onClick={
               () => {
                 this.setState({
-                  ShowOptions:!this.state.ShowOptions
+                  SettingsOpen:!this.state.SettingsOpen
                 })
               }
             }>
-              <SettingsRounded color="secondary">
+              <SettingsRounded color="disabled">
 
               </SettingsRounded>
             </IconButton>
@@ -84,12 +92,32 @@ class App extends Component {
               this.state.LoadedUser && <MessageList ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
             }
             {
-              this.state.LoadedUser && <ChatInput Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
+              this.state.LoadedUser && <ChatInput ToggleDialog={this.ToggleDialog.bind(this)} Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
             }
             {
               this.state.ShowOptions && this.ReturnOptions()
             }
           </div>
+          <Dialog open={this.state.AlertDialog} aria-labelledby="simple-dialog-title">
+            <DialogTitle id="simple-dialog-title">
+              Alert
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Message cannot be blank.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={
+                () => {
+                  this.ToggleDialog()
+                }
+              }>
+                Ok
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <SettingsDialog ToggleOpen={this.ToggleSettings.bind(this)} IsOpen={this.state.SettingsOpen} Users={this.state.Users} User={this.state.User} UpdateName={this.UpdateUsername}/>
         </div>
       </div>
     );
@@ -132,6 +160,18 @@ class App extends Component {
     this.setState({
       User:User,
       LoadedUser:true
+    })
+  }
+
+  ToggleDialog = () => {
+    this.setState({
+      AlertDialog:!this.state.AlertDialog
+    })
+  }
+
+  ToggleSettings = () =>{
+    this.setState({
+      SettingsOpen:!this.state.SettingsOpen
     })
   }
 

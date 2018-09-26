@@ -1,5 +1,5 @@
 import openSocket from 'socket.io-client';
-const socket = openSocket("http://squidswap.com:3001");
+const socket = openSocket("http://localhost:3001");
 
 let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallback){
     this.Messages = new Array();
