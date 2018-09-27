@@ -19,6 +19,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogActions from '@material-ui/core/DialogActions'
+import Snackbar from '@material-ui/core/Snackbar'
 
 //import connections
 import Connector from './api/Connector'
@@ -29,6 +30,7 @@ import MessageList from './components/MessageList'
 import UserList from './components/UserList'
 import SettingsDialog from './components/SettingsDialog'
 import { Avatar } from '@material-ui/core';
+import MessageExtra from './components/MessageExtra'
 
 class App extends Component {
 
@@ -36,7 +38,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      Connector:new Connector(this.updateMessages,this.ToggleTyping,this.SetUsers,this.SetUser),
+      Connector:new Connector(this.updateMessages,this.ToggleTyping,this.SetUsers,this.SetUser,this.Notify),
       Messages:new Array(),
       User:{
         UserId:0,
@@ -48,7 +50,9 @@ class App extends Component {
       LoadedUser:false,
       ScrollRef:React.createRef(),
       AlertDialog:false,
-      SettingsOpen:false
+      SettingsOpen:false,
+      SnackNotif:false,
+      NotifMessage:""
     }
   }
 
@@ -65,7 +69,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AppBar position="static" color="primary">
+        <AppBar position="fixed" color="primary">
           <Toolbar>
             <Typography variant="title" color="inherit">
               SquidChat
@@ -118,19 +122,36 @@ class App extends Component {
             </DialogActions>
           </Dialog>
           <SettingsDialog ToggleOpen={this.ToggleSettings.bind(this)} IsOpen={this.state.SettingsOpen} Users={this.state.Users} User={this.state.User} UpdateName={this.UpdateUsername}/>
+          <Snackbar open={this.state.SnackNotif} anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          autoHideDuration={3000}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{
+           this.state.NotifMessage
+          }</span>}>
+
+          </Snackbar>
         </div>
       </div>
     );
   }
 
-  EmitMessage = (value) => {
+  EmitMessage = (value,payload) => {
     this.state.Connector.SendTest({
       _id:Math.floor(Math.random() * 10000),
       User:this.state.User,
       Message:value,
       Votes:0,
       VotedBy:new Array(),
-      Date:new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getFullYear()
+      Date:new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getFullYear(),
+      Image:{
+        isImage:payload.isImage,
+        URL:payload.URL
+      }
     });
 
     window.scrollTo(0,this.state.ScrollRef.current.offsetTop + 250)
@@ -196,6 +217,19 @@ class App extends Component {
     this.setState({
       Messages:NewMessages
     })
+  }
+
+  Notify = (message) => {
+    this.setState({
+      NotifMessage:message,
+      SnackNotif:true
+    })
+
+    setTimeout(() => {
+      this.setState({
+        SnackNotif:false
+      })
+    },2000)
   }
 
   ReturnOptions = () => {

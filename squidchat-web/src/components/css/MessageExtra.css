@@ -1,0 +1,16 @@
+.FullText{
+    width:100%!important;
+}
+
+.CenterSendImage{
+    width:100%;
+}
+
+.ImageSend{
+    float:left;
+    width:100%;
+}
+
+.ImageSend button{
+    position:relative;
+}

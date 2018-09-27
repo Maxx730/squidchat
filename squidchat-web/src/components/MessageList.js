@@ -9,6 +9,7 @@ import ThumbUpRounded from '@material-ui/icons/ThumbUpRounded'
 import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import ListItemText from '@material-ui/core/ListItemText'
+import ImageMessage from './ImageMessage'
 
 class MessageList extends Component{
     constructor(props){
@@ -51,6 +52,10 @@ class MessageList extends Component{
 
                                             </Chip>
                                         </Tooltip>
+
+                                        {
+                                            (message.Image.isImage == true && typeof message.Image != "undefined") && <ImageMessage Image={message.Image}/>
+                                        }
                                         <Message Message={message.Message}>
 
                                         </Message>
@@ -59,9 +64,11 @@ class MessageList extends Component{
                                                 message.Date
                                             }
                                         </ListItemText>
-                                        {
-                                            message.Votes
-                                        }
+                                        <span className="VoteCounter">
+                                            {
+                                                message.Votes
+                                            }
+                                        </span>
                                         <IconButton onClick = {
                                                 () => {
                                                     this.props.Vote(message)

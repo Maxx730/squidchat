@@ -4,6 +4,7 @@ import './css/ChatInput.css'
 import SendRounded from '@material-ui/icons/SendRounded';
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
+import MessageExtra from './MessageExtra'
 
 class ChatInput extends Component{
     constructor(props){
@@ -18,16 +19,20 @@ class ChatInput extends Component{
     render(){
         return(
             <div className = "ChatInput">
-                <Input fullWidth={true} disableUnderline={true} placeholder="Send Message" startAdornment={
+                <MessageExtra Sender={this.props.Sender}/>
+                <Input className="PaddedInput" fullWidth={true} disableUnderline={true} placeholder="Send Message" startAdornment={
                  <InputAdornment>
-                    <SendRounded color='disabled'/>
+                    <SendRounded className="push-right" color='disabled'/>
                 </InputAdornment>
                 } endAdornment={
                     <InputAdornment>
                         <Button color="primary" onClick={
                             () => {
                                 if(this.state.MessageInput != ""){
-                                    this.props.Sender(this.state.MessageInput)
+                                    this.props.Sender(this.state.MessageInput,{
+                                        isImage:false,
+                                        URL:""
+                                    })
                                     this.setState({
                                         MessageInput:""
                                     })
@@ -52,7 +57,10 @@ class ChatInput extends Component{
                   (event) => {
                       if(event.key === "Enter"){
                         if(this.state.MessageInput != ""){
-                            this.props.Sender(this.state.MessageInput)
+                            this.props.Sender(this.state.MessageInput,{
+                                isImage:false,
+                                URL:""
+                            })
                             this.setState({
                                 MessageInput:""
                             })

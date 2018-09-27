@@ -1,7 +1,7 @@
 import openSocket from 'socket.io-client';
 const socket = openSocket("http://localhost:3001");
 
-let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallback){
+let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallback,Notify){
     this.Messages = new Array();
     this.Users = new Array();
     //Connect to the server.
@@ -27,25 +27,11 @@ let Connector = function(UpdateCallback,TypingCallBack,UsersCallback,UserCallbac
     })
 
     socket.on('JoinedUser',(user) => {
-        this.Messages.push({
-            User:{
-                Username:"System"
-            },
-            Message:user.Username + " has connected!"
-        });
-        this.Users.push(user);
-        UsersCallback(this.Users);
-        UpdateCallback(this.Messages);
+        Notify("User has Joined")
     })
 
     socket.on('UserDisconnected',(user) => {
-        this.Messages.push({
-            User:{
-                Username:"System"
-            },
-            Message:user.Username + " has disconnected!"
-        });
-        UpdateCallback(this.Messages);
+        Notify("User has Left")
     })
 }
 
