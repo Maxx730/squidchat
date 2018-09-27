@@ -41,44 +41,45 @@ class MessageList extends Component{
                             }else{
                                 return(
                                     <ListItem divider>
-                                        <Tooltip title={message.User.Username}>
-                                            <Chip avatar={
-                                                <Avatar>
-                                                    {
-                                                        message.User.Username.slice(0,2).toUpperCase()
-                                                    }
-                                                </Avatar>
-                                            } className="MessageChip" label={message.User.Username}>
+                                        {
+                                            message.type == "standard" && <Tooltip title={message.User.Username}>
+                                                <Chip avatar={
+                                                    <Avatar>
+                                                        {
+                                                            message.User.Username.slice(0,2).toUpperCase()
+                                                        }
+                                                    </Avatar>
+                                                } className="MessageChip" label={message.User.Username}>
 
-                                            </Chip>
-                                        </Tooltip>
+                                                </Chip>
+                                            </Tooltip>
+                                        }
 
                                         {
                                             (message.Image.isImage == true && typeof message.Image != "undefined") && <ImageMessage Image={message.Image}/>
                                         }
-                                        <Message Message={message.Message}>
+                                        <Message User={this.props.RootUser} Message={message.Message}>
 
                                         </Message>
-                                        <ListItemText className="MessageDate">
-                                            {
-                                                message.Date
-                                            }
-                                        </ListItemText>
-                                        <span className="VoteCounter">
-                                            {
-                                                message.Votes
-                                            }
-                                        </span>
-                                        <IconButton onClick = {
-                                                () => {
-                                                    this.props.Vote(message)
+                                        {
+                                            message.type == "standard" && <span className="VoteCounter">
+                                                {
+                                                    message.Votes
                                                 }
-                                            }>
+                                            </span>
+                                        }
+                                        {
+                                            message.type == "standard" && <IconButton onClick = {
+                                                    () => {
+                                                        this.props.Vote(message)
+                                                    }
+                                                }>
 
-                                            {
-                                                message.VotedBy.indexOf(this.props.RootUser.UserId) >= 0 ? <ThumbUpRounded color="primary"/> : <ThumbUpRounded/>
-                                            }
-                                        </IconButton>
+                                                {
+                                                    message.VotedBy.indexOf(this.props.RootUser.UserId) >= 0 ? <ThumbUpRounded color="primary"/> : <ThumbUpRounded/>
+                                                }
+                                            </IconButton>
+                                        }
                                     </ListItem>
                                 )
                             }

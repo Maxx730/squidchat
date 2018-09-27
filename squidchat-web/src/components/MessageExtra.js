@@ -20,7 +20,7 @@ class MessageExtra extends Component{
 
         this.state = {
             ImageURL:"",
-            isExpanded:true
+            isExpanded:false
         }
     }
 
@@ -58,15 +58,9 @@ class MessageExtra extends Component{
                                 })
                             }
                         }/>
-                </ExpansionPanelDetails>
-                <ExpansionPanelDetails>
-                    <center className="CenterSendImage">
-                        {
-                            this.state.ImageURL != "" && <img  src = {this.state.ImageURL}/>
-                        }
-                        <div className="ImageSend">
-                            <Button variant="contained" onClick={
-                                () => {
+                        <Button className="push-left" onClick={
+                            () => {
+                                if(this.state.ImageURL != ""){
                                     this.props.Sender("",{
                                         isImage:true,
                                         URL:this.state.ImageURL
@@ -77,10 +71,16 @@ class MessageExtra extends Component{
                                         isExpanded:false
                                     })
                                 }
-                            }>
-                                Send
-                            </Button>
-                        </div>
+                            }
+                        }>
+                            Send
+                        </Button>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                    <center className="CenterSendImage">
+                        {
+                            this.state.ImageURL != "" && <img  src = {this.state.ImageURL}/>
+                        }
                     </center>
                 </ExpansionPanelDetails>
             </ExpansionPanel>

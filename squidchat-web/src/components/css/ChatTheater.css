@@ -1,0 +1,7 @@
+.FloatingTheater{
+    position:fixed;
+    top:70px;
+    z-index:99999!important;
+    padding:5px;
+    right:15px;
+}

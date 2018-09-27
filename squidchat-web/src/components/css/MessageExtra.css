@@ -12,5 +12,9 @@
 }
 
 .ImageSend button{
-    position:relative;
+
+}
+
+.push-left{
+    margin-left:10px!important;
 }

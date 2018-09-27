@@ -26,7 +26,7 @@ class ChatInput extends Component{
                 </InputAdornment>
                 } endAdornment={
                     <InputAdornment>
-                        <Button color="primary" onClick={
+                        <Button className="SendText" color="primary" onClick={
                             () => {
                                 if(this.state.MessageInput != ""){
                                     this.props.Sender(this.state.MessageInput,{

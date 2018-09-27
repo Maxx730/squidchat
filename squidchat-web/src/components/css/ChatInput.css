@@ -12,9 +12,8 @@
     width:90%;
 }
 
-.ChatInput button{
-    position:fixed;
-    right:10px;
+.ChatInput .SendText{
+    margin-right:20px;
 }
 
 .PaddedInput{

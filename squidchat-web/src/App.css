@@ -30,3 +30,9 @@
   right:8px!important;
   position:absolute!important;
 }
+
+.LoginButton{
+  float:right!important;
+  position:absolute!important;
+  right:55px;
+}

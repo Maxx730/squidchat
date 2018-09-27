@@ -13,17 +13,20 @@ class Message extends Component{
     render(){
         return(
             <ListItemText className = "Message" primary={
-                this.CheckForYell(this.props.Message)
+                this.CheckFor(this.props.Message)
             }>
             </ListItemText>
         )
     }
 
-    CheckForYell(message){
+    CheckFor(message){
         if(message.indexOf("{yell}") > -1){
             let parts = message.split("{yell}")
 
             return <span className="YellText">{parts[1]}</span>
+        }else if(message.indexOf("{*}") > -1){
+            let parts = message.split("{*}")
+            return <span className="TeleportsText"><i><center>{this.props.User.Username} teleports behind {parts[1]}, heh nothin personel kid.</center></i></span>
         }else{
             return message
         }

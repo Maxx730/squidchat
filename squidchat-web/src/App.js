@@ -20,6 +20,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogActions from '@material-ui/core/DialogActions'
 import Snackbar from '@material-ui/core/Snackbar'
+import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 
 //import connections
 import Connector from './api/Connector'
@@ -31,6 +32,7 @@ import UserList from './components/UserList'
 import SettingsDialog from './components/SettingsDialog'
 import { Avatar } from '@material-ui/core';
 import MessageExtra from './components/MessageExtra'
+import ChatTheater from './components/ChatTheater'
 
 class App extends Component {
 
@@ -88,9 +90,13 @@ class App extends Component {
 
               </SettingsRounded>
             </IconButton>
+            <IconButton className="LoginButton">
+              <VpnKeyRounded color="disabled"/>
+            </IconButton>
           </Toolbar>
         </AppBar>
         <div className="MainCon">
+          <ChatTheater/>
           <div className="LeftPanel">
             {
               this.state.LoadedUser && <MessageList RootUser={this.state.User} Vote={this.AddVote} ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
@@ -141,8 +147,15 @@ class App extends Component {
   }
 
   EmitMessage = (value,payload) => {
+    let MessageType = "standard"
+
+    if(value.indexOf("{*}") > -1){
+      MessageType = "action"
+    }
+
     this.state.Connector.SendTest({
       _id:Math.floor(Math.random() * 10000),
+      type:MessageType,
       User:this.state.User,
       Message:value,
       Votes:0,
