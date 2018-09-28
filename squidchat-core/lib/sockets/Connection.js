@@ -1,3 +1,6 @@
+
+
+
 let User = function(id){
     return{
         UserId:id,
@@ -5,19 +8,45 @@ let User = function(id){
     }
 }
 
+User.prototype.setVals = (_id,username) => {
+    this.UserId = _id;
+    this.username = username;
+}
+
 let Connection = function(io){
     this.Users = new Array();
     this.Messages = new Array();
+    this.Playback = null;
+
+    let sql = require('../db/database.js');
+    this.conn = new sql();
 
     console.log("INITIALIZED CONNECTION SOCKET");
 
     io.on('connection',(socket) => {
+        this.Playback = require('./Video')(socket,io)
+
         io.emit('Message Sent',this.Messages)
-        //Create the new user once someone has connected and add them to the user array.
-        let NewUser = new User(socket.id);
-        this.Users.push(NewUser);
-        //Send the new User object back to that user.
-        io.to(socket.id).emit('InitializeUser',NewUser);
+
+        //DATABASE CONNECTION AND USER CHECKS/CREATION ARE HERE.
+        socket.on('CreateUser',(User) => {
+
+        })
+        //END DATABASE CONNECTION
+
+        socket.on('GetUser',(opts) => {
+            let NewUser = new User(socket.id);
+
+            //If the user has a cookie for the given info then set those values and
+            //return the saved user info.
+            if(!opts.anon){
+                NewUser.setVals(opts.vals._id,opts.vals.username);
+            }
+
+            this.Users.push(NewUser);
+            //Send the new User object back to that user.
+            io.to(socket.id).emit('InitializeUser',NewUser);
+        })
 
         socket.on('Test',(msg) => {
             this.Messages.push(msg);
@@ -37,7 +66,6 @@ let Connection = function(io){
                 }
             }
 
-            console.log(this.Messages)
             for(let i = 0;i < this.Messages.length;i++){
                 if(this.Messages[i].User.UserId == User.UserId){
                     this.Messages[i].User = User;
@@ -56,7 +84,7 @@ let Connection = function(io){
             io.emit('Message Sent',this.Messages)
         })
 
-        io.emit('JoinedUser',NewUser);
+        //io.emit('JoinedUser',NewUser);
         io.emit('AllUsers',this.Users);
 
         socket.on('disconnect',() => {

@@ -58,7 +58,7 @@ class MessageList extends Component{
                                         {
                                             (message.Image.isImage == true && typeof message.Image != "undefined") && <ImageMessage Image={message.Image}/>
                                         }
-                                        <Message User={this.props.RootUser} Message={message.Message}>
+                                        <Message Type={message.type} User={this.props.RootUser} Message={message.Message}>
 
                                         </Message>
                                         {

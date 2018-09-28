@@ -1,0 +1,21 @@
+.LoginCard{
+    max-width:300px;
+    margin:0 auto;
+    margin-top:300px;
+}
+
+.full-width{
+    width:100%;
+}
+
+.push-down{
+    margin-top:10px!important;
+}
+
+.btn-fifty{
+    width:48%;
+}
+
+.push-left{
+    float:right;
+}
