@@ -10,6 +10,19 @@ import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 import './css/LoginForm.css'
 
 class SignUpForm extends Component{
+
+    constructor(props){
+        super(props)
+
+        this.state = {
+            User:{
+                Username:"",
+                Password:"",
+                Repeat:""
+            }
+        }
+    }
+
     render(){
         return(
             <Card className="LoginCard">
@@ -17,21 +30,51 @@ class SignUpForm extends Component{
                     <Typography>
                         Sign Up
                     </Typography>
-                    <TextField placeholder="Username" fullWidth={true} className="push-down" InputProps={{
+                    <TextField placeholder="Username" value={this.state.User.Username} onChange={
+                        (evt) => {
+                            this.setState({
+                                User:{
+                                    Username:evt.target.value,
+                                    Password:this.state.User.Password,
+                                    Repeat:this.state.User.Repeat
+                                }
+                            })
+                        }
+                    } fullWidth={true} className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
                                 <PersonRounded/>
                             </InputAdornment>
                         )
                     }}/>
-                    <TextField placeholder="Password" fullWidth={true} className="push-down" InputProps={{
+                    <TextField placeholder="Password" value={this.state.User.Password} onChange={
+                        (evt) => {
+                            this.setState({
+                                User:{
+                                    Username:this.state.User.Username,
+                                    Password:evt.target.value,
+                                    Repeat:this.state.User.Repeat
+                                }
+                            })
+                        }
+                    } fullWidth={true} className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
                                 <VpnKeyRounded/>
                             </InputAdornment>
                         )
                     }}/>
-                    <TextField placeholder="Repeat Password" fullWidth={true} className="push-down" InputProps={{
+                    <TextField placeholder="Repeat Password" value={this.state.User.Repeat} onChange={
+                        (evt) => {
+                            this.setState({
+                                User:{
+                                    Username:this.state.User.Username,
+                                    Password:this.state.User.Password,
+                                    Repeat:evt.target.value
+                                }
+                            })
+                        }
+                    } fullWidth={true} className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
                                 <VpnKeyRounded/>
@@ -45,12 +88,24 @@ class SignUpForm extends Component{
                     }>
                         Cancel
                     </Button>
-                    <Button variant="contained" className="push-down btn-fifty push-left">
+                    <Button variant="contained" className="push-down btn-fifty push-left" onClick={
+                        () => {
+
+                        }
+                    }>
                         Submit
                     </Button>
                 </CardContent>
             </Card>
         )
+    }
+
+    CheckFields(){
+        if(this.state.Username != "" && this.state.Password != "" && (this.state.Password == this.state.Repeat)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
 
