@@ -8,7 +8,9 @@ import Button from '@material-ui/core/Button'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import PersonRounded from '@material-ui/icons/PersonRounded'
 import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
+import Chip from '@material-ui/core/Chip'
 import './css/LoginForm.css'
+import { connect } from 'react-redux';
 
 class LoginForm extends Component{
     constructor(props){
@@ -16,43 +18,69 @@ class LoginForm extends Component{
 
         this.state = {
             User:{
-                _id:cookie.load("SquidChatId"),
-                Username:cookie.load("SquidChatUsername")
+                Username:"",
+                Password:""
             }
         }
     }
 
     componentDidMount(){
-        if(typeof this.state.User._id != "undefined" && typeof this.state.User.Username != "undefined"){
-            this.props.Check(this.state.User);
-        }
+
     }
 
     render(){
         return(
             <Card className="LoginCard">
+                {
+                    this.props.LoginError && <CardContent className="CardError"><center><Chip label="Incorrect username or password."></Chip></center></CardContent>
+                }
                 <CardContent>
-                    <Typography>
+                    <Typography color="textSecondary">
                         Login
                     </Typography>
-                    <TextField placeholder="Username" fullWidth={true} className="push-down" InputProps={{
+                    <TextField variant="outlined"  placeholder="Username" value={this.state.User.Username} className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
-                                <PersonRounded/>
+                                <PersonRounded color="disabled"/>
                             </InputAdornment>
                         )
-                    }}/>
-                    <TextField placeholder="Password" fullWidth={true} className="push-down" InputProps={{
+                    }} onChange={
+                        (evt) => {
+                            this.setState({
+                                User:{
+                                    Username:evt.target.value,
+                                    Password:this.state.User.Password
+                                }
+                            })
+                        }
+                    }/>
+                    <TextField variant="outlined" placeholder="Password" value={this.state.User.Password} className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
-                                <VpnKeyRounded/>
+                                <VpnKeyRounded color="disabled"/>
                             </InputAdornment>
                         )
-                    }}/>
-                    <Button variant="contained" flat={true} className="push-down btn-fifty push-right">
+                    }} onChange={
+                        (evt) => {
+                            this.setState({
+                                User:{
+                                    Username:this.state.User.Username,
+                                    Password:evt.target.value
+                                }
+                            })
+                        }
+                    }/>
+                    <Button variant="outlined" flat={true} className="push-down btn-fifty push-right" onClick={
+                        () => {
+                            this.props.Login({
+                                Username:this.state.User.Username,
+                                Password:this.state.User.Password
+                            })
+                        }
+                    }>
                         Login
                     </Button>
-                    <Button variant="contained" className="push-down btn-fifty push-left" onClick={
+                    <Button variant="outlined" className="push-down btn-fifty push-left" onClick={
                         () => {
                             this.props.Toggle(false)
                         }
@@ -65,4 +93,10 @@ class LoginForm extends Component{
     }
 }
 
-export default LoginForm
+const mapStateToProps = (state) => {
+    return{
+        LoginError:state.User.LoginError
+    }
+}
+
+export default connect(mapStateToProps)(LoginForm)

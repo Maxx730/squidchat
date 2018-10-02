@@ -7,7 +7,7 @@ class ChatPrompt extends Component{
         super(props)
 
         this.state = {
-            isLogin:false
+            isLogin:true
         }
     }
 
@@ -19,7 +19,7 @@ class ChatPrompt extends Component{
         return(
             <div>
                 {
-                    this.state.isLogin ? <LoginForm Toggle={this.ToggleForm}/> : <SignUpForm Toggle={this.ToggleForm}/>
+                    this.state.isLogin ? <LoginForm Login={this.props.Login} Toggle={this.ToggleForm}/> : <SignUpForm SignUp={this.props.SignUp} Toggle={this.ToggleForm}/>
                 }
             </div>
         )

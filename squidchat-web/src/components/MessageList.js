@@ -26,63 +26,9 @@ class MessageList extends Component{
                 <List dense="true">
                     {
                         this.props.Messages.map((message) => {
-                            if(message.User.Username === "System"){
-                                return(
-                                    <ListItem divider>
-                                        <center className="SystemCenterMessage">
-                                            <Message Message={
-                                                message.Message
-                                            }>
-
-                                            </Message>
-                                        </center>
-                                    </ListItem>
-                                )
-                            }else{
-                                return(
-                                    <ListItem divider>
-                                        {
-                                            message.type == "standard" && <Tooltip title={message.User.Username}>
-                                                <Chip avatar={
-                                                    <Avatar>
-                                                        {
-                                                            message.User.Username.slice(0,2).toUpperCase()
-                                                        }
-                                                    </Avatar>
-                                                } className="MessageChip" label={message.User.Username}>
-
-                                                </Chip>
-                                            </Tooltip>
-                                        }
-
-                                        {
-                                            (message.Image.isImage == true && typeof message.Image != "undefined") && <ImageMessage Image={message.Image}/>
-                                        }
-                                        <Message Type={message.type} User={this.props.RootUser} Message={message.Message}>
-
-                                        </Message>
-                                        {
-                                            message.type == "standard" && <span className="VoteCounter">
-                                                {
-                                                    message.Votes
-                                                }
-                                            </span>
-                                        }
-                                        {
-                                            message.type == "standard" && <IconButton onClick = {
-                                                    () => {
-                                                        this.props.Vote(message)
-                                                    }
-                                                }>
-
-                                                {
-                                                    message.VotedBy.indexOf(this.props.RootUser.UserId) >= 0 ? <ThumbUpRounded color="primary"/> : <ThumbUpRounded/>
-                                                }
-                                            </IconButton>
-                                        }
-                                    </ListItem>
-                                )
-                            }
+                            return(
+                                <Message Message={message}/>
+                            )
                         })
                     }
                     <div ref={this.props.ScrollRef} className="scrollElem">

@@ -19,14 +19,13 @@ class ChatInput extends Component{
     render(){
         return(
             <div className = "ChatInput">
-                <MessageExtra Sender={this.props.Sender}/>
                 <Input className="PaddedInput" fullWidth={true} disableUnderline={true} placeholder="Send Message" startAdornment={
                  <InputAdornment>
                     <SendRounded className="push-right" color='disabled'/>
                 </InputAdornment>
                 } endAdornment={
                     <InputAdornment>
-                        <Button className="SendText" color="primary" onClick={
+                        <Button className="SendText" variant="outlined" color="primary" onClick={
                             () => {
                                 if(this.state.MessageInput != ""){
                                     this.props.Sender(this.state.MessageInput,{
@@ -56,28 +55,25 @@ class ChatInput extends Component{
                 onKeyDown={
                   (event) => {
                       if(event.key === "Enter"){
-                        if(this.state.MessageInput != ""){
-                            this.props.Sender(this.state.MessageInput,{
-                                isImage:false,
-                                URL:""
-                            })
-                            this.setState({
-                                MessageInput:""
-                            })
-                        }else{
-                            this.props.ToggleDialog()
-                        }
-                      }else{
-                        this.props.Toggle(true);
-                        this.props.Connector.ShowTyping(true);
+                        this.state.Connector.SendMessage({
+                            User:{
+                                _id:this.props.User._id,
+                                Username:this.props.User.Username
+                            },
+                            Message:this.state.MessageInput,
+                            Type:"standard"
+                        })
+
+                        this.setState({
+                            MessageInput:""
+                        })
                       }
                   }
                 }
                 onKeyUp={
                     () => {
                         setTimeout(() => {
-                            this.props.Toggle(false)
-                            this.props.Connector.ShowTyping(false)
+
                         },1000)
                     }
                 }/>

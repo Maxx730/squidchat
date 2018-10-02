@@ -27,10 +27,10 @@ class SignUpForm extends Component{
         return(
             <Card className="LoginCard">
                 <CardContent>
-                    <Typography>
+                    <Typography color="textSecondary">
                         Sign Up
                     </Typography>
-                    <TextField placeholder="Username" value={this.state.User.Username} onChange={
+                    <TextField variant="outlined" placeholder="Username" value={this.state.User.Username} onChange={
                         (evt) => {
                             this.setState({
                                 User:{
@@ -40,14 +40,14 @@ class SignUpForm extends Component{
                                 }
                             })
                         }
-                    } fullWidth={true} className="push-down" InputProps={{
+                    } className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
-                                <PersonRounded/>
+                                <PersonRounded color="disabled"/>
                             </InputAdornment>
                         )
                     }}/>
-                    <TextField placeholder="Password" value={this.state.User.Password} onChange={
+                    <TextField variant="outlined" placeholder="Password" value={this.state.User.Password} onChange={
                         (evt) => {
                             this.setState({
                                 User:{
@@ -57,14 +57,14 @@ class SignUpForm extends Component{
                                 }
                             })
                         }
-                    } fullWidth={true} className="push-down" InputProps={{
+                    } className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
-                                <VpnKeyRounded/>
+                                <VpnKeyRounded color="disabled"/>
                             </InputAdornment>
                         )
                     }}/>
-                    <TextField placeholder="Repeat Password" value={this.state.User.Repeat} onChange={
+                    <TextField variant="outlined" placeholder="Repeat Password" value={this.state.User.Repeat} onChange={
                         (evt) => {
                             this.setState({
                                 User:{
@@ -74,23 +74,30 @@ class SignUpForm extends Component{
                                 }
                             })
                         }
-                    } fullWidth={true} className="push-down" InputProps={{
+                    } className="push-down" InputProps={{
                         startAdornment:(
                             <InputAdornment position="start">
-                                <VpnKeyRounded/>
+                                <VpnKeyRounded color="disabled"/>
                             </InputAdornment>
                         )
                     }}/>
-                    <Button variant="contained" flat={true} className="push-down btn-fifty push-right" onClick={
+                    <Button variant="outlined" flat={true} className="push-down btn-fifty push-right" onClick={
                         () => {
                             this.props.Toggle(true)
                         }
                     }>
                         Cancel
                     </Button>
-                    <Button variant="contained" className="push-down btn-fifty push-left" onClick={
+                    <Button variant="outlined" className="push-down btn-fifty push-left" onClick={
                         () => {
-
+                            if(this.state.User.Username != "" && this.state.User.Password != "" && (this.state.User.Password == this.state.User.Repeat)){
+                                this.props.SignUp({
+                                    username:this.state.User.Username,
+                                    password:this.state.User.Password
+                                })
+                            }else{
+                                console.log("ERROR CREATING USER")
+                            }
                         }
                     }>
                         Submit
@@ -98,14 +105,6 @@ class SignUpForm extends Component{
                 </CardContent>
             </Card>
         )
-    }
-
-    CheckFields(){
-        if(this.state.Username != "" && this.state.Password != "" && (this.state.Password == this.state.Repeat)){
-            return true;
-        }else{
-            return false;
-        }
     }
 }
 

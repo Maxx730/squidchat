@@ -23,6 +23,10 @@ import Snackbar from '@material-ui/core/Snackbar'
 import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 import cookie from 'react-cookies'
 
+import { connect } from 'react-redux'
+import { CreateUser,CheckLogin,GetFromHash } from './actions/UserActions'
+import { UpdateMessages } from './actions/MessageActions'
+
 //import connections
 import Connector from './api/Connector'
 
@@ -35,6 +39,9 @@ import { Avatar } from '@material-ui/core';
 import MessageExtra from './components/MessageExtra'
 import ChatTheater from './components/ChatTheater'
 import ChatPrompt from './components/ChatPrompt'
+import InputControls from './components/InputControls'
+import ImageUpload from './components/ImageUpload'
+import EmojiModal from './components/EmojiModal'
 
 class App extends Component {
 
@@ -42,315 +49,89 @@ class App extends Component {
     super(props)
 
     this.state = {
-      Connector:new Connector(this.updateMessages,this.ToggleTyping,this.SetUsers,this.SetUser,this.Notify,this.SetVideo,this.SetCookie),
-      Messages:new Array(),
-      User:{
-        UserId:0,
-        Username:cookie.load("SquidChatUsername")
-      },
-      Users:new Array(),
-      Typing:false,
-      ShowOptions:false,
-      LoadedUser:false,
-      ScrollRef:React.createRef(),
-      AlertDialog:false,
-      SettingsOpen:false,
-      SnackNotif:false,
-      NotifMessage:"",
-      ShowChatVideo:false,
-      ReturnedUser:cookie.load("SquidChatUsername"),
-      ShowPrompt:true,
-      Video:{
-        _id:""
-      }
+      Connector:new Connector(this.MessageCallback),
+      UploadOpen:false,
+      EmojiOpen:false
     }
   }
 
   componentDidMount(){
-    if(typeof this.state.ReturnedUser != "undefined"){
-      this.setState({
-        User:{
-          Username:this.state.ReturnedUser
-        }
+    //Check if the user has cookies set or not.
+    if(typeof cookie.load("SquidChatHash") != "undefined"){
+      //If the cookie does exist, pull the correct info from the DB and
+      //then have the user join the chat session with the given user info.
+      this.props.GetHashInfo(cookie.load("SquidChatHash"),() => {
+        this.state.Connector.JoinSession(this.props.User)
       })
     }
   }
 
-  updateMessages = (messages) => {
-    this.setState({
-      Messages:messages
-    })
-  }
 
   render() {
-    if(this.state.ShowPrompt){
+    if(!this.props.User.LoggedIn){
       return(
-        <ChatPrompt Check={this.CookieCheck}/>
+        <ChatPrompt SignUp={this.props.SignUpUser} Login={this.props.CheckLogin}/>
       )
     }else{
       return (
         <div className="App">
-          <AppBar position="fixed" color="primary">
-            <Toolbar>
-              <Typography variant="title" color="inherit">
-                SquidChat
-              </Typography>
-              {
-                this.state.Typing && <KeyboardRounded className="TypingIndicator"></KeyboardRounded>
-              }
-              <IconButton className="SettingButtonRight" onClick={
-                () => {
-                  this.setState({
-                    SettingsOpen:!this.state.SettingsOpen
-                  })
-                }
-              }>
-                <SettingsRounded color="disabled">
+          <AppBar/>
 
-                </SettingsRounded>
-              </IconButton>
-              <IconButton className="LoginButton">
-                <VpnKeyRounded color="disabled"/>
-              </IconButton>
-            </Toolbar>
-          </AppBar>
-          <div className="MainCon">
-            {
-              this.state.ShowChatVideo && <ChatTheater Video={this.state.Video} VideoId={this.state.Video._id} Connector={this.state.Connector}/>
-            }
-            <div className="LeftPanel">
-              {
-                this.state.LoadedUser && <MessageList RootUser={this.state.User} Vote={this.AddVote} ScrollRef={this.state.ScrollRef} Messages={this.state.Messages}/>
-              }
-              {
-                this.state.LoadedUser && <ChatInput ToggleDialog={this.ToggleDialog.bind(this)} Sender={this.EmitMessage} Toggle={this.ToggleTyping} Connector={this.state.Connector}/>
-              }
-              {
-                this.state.ShowOptions && this.ReturnOptions()
-              }
-            </div>
-            <Dialog open={this.state.AlertDialog} aria-labelledby="simple-dialog-title">
-              <DialogTitle id="simple-dialog-title">
-                Alert
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Message cannot be blank.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={
-                  () => {
-                    this.ToggleDialog()
-                  }
-                }>
-                  Ok
-                </Button>
-              </DialogActions>
-            </Dialog>
-            <SettingsDialog ToggleOpen={this.ToggleSettings.bind(this)} IsOpen={this.state.SettingsOpen} Users={this.state.Users} User={this.state.User} UpdateName={this.UpdateUsername}/>
-            <Snackbar open={this.state.SnackNotif} anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            autoHideDuration={3000}
-            ContentProps={{
-              'aria-describedby': 'message-id',
-            }}
-            message={<span id="message-id">{
-            this.state.NotifMessage
-            }</span>}>
+          {
+            this.state.UploadOpen && <ImageUpload ToggleUpload={this.ToggleUpload.bind(this)}/>
+          }
 
-            </Snackbar>
-          </div>
+          {
+            this.state.EmojiOpen && <EmojiModal ToggleEmoji={this.ToggleEmoji.bind(this)}/>
+          }
+
+          <MessageList Messages={this.props.Messages.Messages}></MessageList>
+          <InputControls ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
+          <ChatInput User={this.props.User} Connector={this.state.Connector}/>
         </div>
       );
     }
-
   }
 
-  EmitMessage = (value,payload) => {
-    let MessageType = "standard"
-
-    if(value.indexOf("{*}") > -1){
-      MessageType = "action"
-    }else if(value.indexOf("youtube.com/watch") > -1){
-      MessageType = "youtube"
-    }
-
-    if(MessageType == "youtube"){
-      let parts = value.split("v=");
-
-      this.setState({
-        ShowChatVideo:true,
-        Video:{
-          _id:parts[1]
-        }
-      },() => {
-        this.state.Connector.SendTest({
-          _id:Math.floor(Math.random() * 10000),
-          type:"system",
-          User:this.state.User,
-          Message:this.state.User.Username+" changed the chat video.",
-          Votes:0,
-          VotedBy:new Array(),
-          Date:new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getFullYear(),
-          Image:{
-            isImage:payload.isImage,
-            URL:payload.URL
-          }
-        });
-
-        this.state.Connector.EmitSetVideo(this.state.Video);
-      })
-
-    }else{
-      this.state.Connector.SendTest({
-        _id:Math.floor(Math.random() * 10000),
-        type:MessageType,
-        User:this.state.User,
-        Message:value,
-        Votes:0,
-        VotedBy:new Array(),
-        Date:new Date().getMonth() + "/" + new Date().getDay() + "/" + new Date().getFullYear(),
-        Image:{
-          isImage:payload.isImage,
-          URL:payload.URL
-        }
-      });
-    }
-
-    window.scrollTo(0,this.state.ScrollRef.current.offsetTop + 250)
-    console.log(this.state)
-  }
-
-  ToggleTyping = (value) => {
+  ToggleUpload(val){
     this.setState({
-      Typing:value
+      UploadOpen:val
     })
   }
 
-  UpdateUsername = (value) => {
-    let newUser = {
-      UserId:this.state.User.UserId,
-      Username:value
-    }
+  ToggleEmoji(val){
     this.setState({
-      User:newUser
-    })
-
-    this.state.Connector.EmitNameChange(newUser);
-  }
-
-  SetUsers = (Users) => {
-    this.setState({
-      Users:Users
+      EmojiOpen:val
     })
   }
 
-  SetUser = (User) => {
-    this.setState({
-      User:User,
-      LoadedUser:true
-    })
-  }
-
-  ToggleDialog = () => {
-    this.setState({
-      AlertDialog:!this.state.AlertDialog
-    })
-  }
-
-  ToggleSettings = () =>{
-    this.setState({
-      SettingsOpen:!this.state.SettingsOpen
-    })
-  }
-
-  SetCookie = () => {
-    cookie.save("SquidChatUsername",this.state.User.Username,{path:"/"})
-  }
-
-  CookieCheck = (User) => {
-    this.setState({
-      ShowPrompt:false
-    })
-  }
-
-  AddVote = (message) => {
-    let NewMessages = this.state.Messages;
-
-    for(let i = 0;i < NewMessages.length;i++){
-      if(NewMessages[i]._id == message._id){
-        if(NewMessages[i].VotedBy.indexOf(this.state.User.UserId) == -1){
-          NewMessages[i].Votes++;
-          NewMessages[i].VotedBy.push(this.state.User.UserId)
-          this.state.Connector.EmitVote(NewMessages[i])
-        }
-      }
-    }
-
-    this.setState({
-      Messages:NewMessages
-    })
-  }
-
-  Notify = (message) => {
-    this.setState({
-      NotifMessage:message,
-      SnackNotif:true
-    })
-
-    setTimeout(() => {
-      this.setState({
-        SnackNotif:false
-      })
-    },2000)
-  }
-
-  SetVideo = (video) => {
-    this.setState({
-      Video:video,
-      ShowChatVideo:true
-    })
-  }
-
-  ReturnOptions = () => {
-    return(
-      <Paper className="OptionsPaper" elevation={1}>
-        <Typography variant="headline" component="h3">
-          {
-            this.state.User.Username
-          }
-        </Typography>
-        <Typography component="p">
-          <List>
-            <ListItem divider>
-              <TextField className="LongText" value={this.state.User.Username} onChange={
-                (event) => {
-                  this.UpdateUsername(event.target.value)
-                }
-              }>
-              </TextField>
-              <Button onClick = {
-                () => {
-                  this.state.Connector.EmitNameChange(this.state.User);
-                }
-              } className="PushLeft" variant="outlined" color="primary">
-                Save
-              </Button>
-            </ListItem>
-            <ListSubHeader>
-              In Room
-            </ListSubHeader>
-            <UserList Users={this.state.Users}>
-
-            </UserList>
-          </List>
-        </Typography>
-      </Paper>
-    )
+  MessageCallback = (Messages) => {
+    this.props.UpdateMessages(Messages)
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return{
+    User:state.User,
+    Messages:state.Messages
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    SignUpUser: (User) => {
+      CreateUser(dispatch,User)
+    },
+    CheckLogin: (User) => {
+      CheckLogin(dispatch,User)
+    },
+    GetHashInfo: (hash,callback) => {
+      GetFromHash(dispatch,hash,callback)
+    },
+    UpdateMessages: (Messages) => {
+      UpdateMessages(dispatch,Messages)
+    }
+  }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(App);
