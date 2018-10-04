@@ -5,20 +5,30 @@ import SendRounded from '@material-ui/icons/SendRounded';
 import InputAdornment from '@material-ui/core/InputAdornment'
 import Button from '@material-ui/core/Button'
 import MessageExtra from './MessageExtra'
+import MessageDialog from './MessageDialog'
+import { connect } from 'react-redux'
+import { UpdateMessage,ResetMessage } from '../actions/ComposeActions'
 
 class ChatInput extends Component{
     constructor(props){
         super(props)
 
         this.state = {
-            MessageInput:"",
-            Connector:this.props.Connector
+            Connector:this.props.Connector,
+            ShowErrorDialog:false
         }
     }
 
     render(){
         return(
             <div className = "ChatInput">
+                <MessageDialog Content="Message cannot be sent as blank." Title="Error" Show={this.state.ShowErrorDialog} Close={
+                    () => {
+                        this.setState({
+                            ShowErrorDialog:false
+                        })
+                    }
+                }/>
                 <Input className="PaddedInput" fullWidth={true} disableUnderline={true} placeholder="Send Message" startAdornment={
                  <InputAdornment>
                     <SendRounded className="push-right" color='disabled'/>
@@ -28,15 +38,22 @@ class ChatInput extends Component{
                         <Button className="SendText" variant="outlined" color="primary" onClick={
                             () => {
                                 if(this.state.MessageInput != ""){
-                                    this.props.Sender(this.state.MessageInput,{
-                                        isImage:false,
-                                        URL:""
+                                    this.state.Connector.SendMessage({
+                                        User:{
+                                            _id:this.props.User._id,
+                                            Username:this.props.User.Username
+                                        },
+                                        Message:this.state.MessageInput,
+                                        Type:"standard"
                                     })
+
                                     this.setState({
                                         MessageInput:""
                                     })
                                 }else{
-                                    alert("Message cannot be blank.")
+                                    this.setState({
+                                        ShowErrorDialog:true
+                                    })
                                 }
                             }
                         }>
@@ -45,28 +62,39 @@ class ChatInput extends Component{
                     </InputAdornment>
                 } onChange={
                     (event) => {
-                        this.setState({
-                            MessageInput:event.target.value
-                        })
-                    }
-                } value={
-                    this.state.MessageInput
-                }
-                onKeyDown={
-                  (event) => {
-                      if(event.key === "Enter"){
-                        this.state.Connector.SendMessage({
+                        this.props.UpdateMessage({
                             User:{
                                 _id:this.props.User._id,
                                 Username:this.props.User.Username
                             },
-                            Message:this.state.MessageInput,
+                            Message:event.target.value,
                             Type:"standard"
                         })
+                    }
+                } value={
+                    this.props.Message.Message
+                }
+                onKeyDown={
+                  (event) => {
+                      if(event.key === "Enter"){
+                          if(this.props.Message.Message != ""){
+                            this.state.Connector.SendMessage({
+                                User:{
+                                    _id:this.props.User._id,
+                                    Username:this.props.User.Username
+                                },
+                                Message:this.props.Message.Message,
+                                Type:"standard"
+                            })
 
-                        this.setState({
-                            MessageInput:""
-                        })
+                            this.props.ResetMessage()
+
+                            //Reset the message using Redux
+                          }else{
+                            this.setState({
+                                ShowErrorDialog:true
+                            })
+                          }
                       }
                   }
                 }
@@ -82,4 +110,21 @@ class ChatInput extends Component{
     }
 }
 
-export default ChatInput;
+const matchStateToProps = (state) => {
+    return{
+        Message:state.Message
+    }
+}
+
+const matchDispatchToProps = (dispatch) => {
+    return{
+        UpdateMessage: (Message) => {
+            UpdateMessage(dispatch,Message)
+        },
+        ResetMessage: () => {
+            ResetMessage(dispatch)
+        }
+    }
+}
+
+export default connect(matchStateToProps,matchDispatchToProps)(ChatInput);

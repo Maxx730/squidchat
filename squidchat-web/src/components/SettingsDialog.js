@@ -28,38 +28,20 @@ class SettingsDialog extends Component{
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Feel free to change any preferences below.
+
                     </DialogContentText>
-                    <TextField className="LongText" placeholder="Display Name" value={this.state.NewUsername} onChange={
-                        (evt) => {
-                            this.setState({
-                                NewUsername:evt.target.value
-                            })
-                        }
-                    }>
-                    </TextField>
-
-                    <List>
-                        <ListSubHeader>
-                            In Room
-                        </ListSubHeader>
-                        <UserList Users={this.props.Users}>
-
-                        </UserList>
-                    </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={
+                    <Button variant="outlined" onClick={
                         () => {
-                            this.props.ToggleOpen()
+                            this.props.Open(false)
                         }
                     }>
                         Cancel
                     </Button>
-                    <Button onClick = {
+                    <Button variant="outlined" onClick = {
                         () => {
-                            this.props.UpdateName(this.state.NewUsername)
-                            this.props.ToggleOpen()
+                            this.props.Open(false)
                         }
                     }>
                         Save

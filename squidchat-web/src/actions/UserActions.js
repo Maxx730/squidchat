@@ -59,3 +59,10 @@ export function GetFromHash(dispatch,hash,callback){
         }
     })
 }
+
+export function UpdateUserList(dispatch,Users){
+    dispatch({
+        type:"UPDATE_LIST",
+        payload:Users
+    })
+}

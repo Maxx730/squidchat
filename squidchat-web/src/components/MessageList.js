@@ -20,6 +20,10 @@ class MessageList extends Component{
         }
     }
 
+    componentDidMount(){
+
+    }
+
     render(){
         return(
             <div className="MessageList">
@@ -31,7 +35,9 @@ class MessageList extends Component{
                             )
                         })
                     }
-                    <div ref={this.props.ScrollRef} className="scrollElem">
+                    <div ref={(ref) => {
+                        this.ScrollRef = ref
+                    }} className="scrollElem">
 
                     </div>
                 </List>

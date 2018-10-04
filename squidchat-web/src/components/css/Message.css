@@ -9,3 +9,13 @@
 .SystemMessage{
     color:#BFBFBF;
 }
+
+.ImageMessage{
+    overflow:hidden;
+    margin-left:20px;
+    border-radius:10px;
+}
+
+.ImageMessage img{
+    margin-bottom:-20px;
+}

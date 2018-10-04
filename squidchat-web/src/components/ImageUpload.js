@@ -10,6 +10,8 @@ import './css/ImageUpload.css'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
+import { connect } from 'react-redux'
+import { ResetMessage,UpdateMessage } from '../actions/ComposeActions'
 
 class ImageUpload extends Component{
     constructor(props){
@@ -89,7 +91,23 @@ class ImageUpload extends Component{
                                 } variant="outlined">
                                     Cancel
                                 </Button>
-                                <Button variant="outlined">
+                                <Button variant="outlined" onClick={
+                                    () => {
+                                        //Here we want to update
+                                        this.props.Connector.SendImage({
+                                            Type:"image",
+                                            Image:{
+                                                Url:this.state.ImageURL
+                                            },
+                                            User:{
+                                                _id:this.props.User._id,
+                                                Username:this.props.User.Username
+                                            }
+                                        })
+
+                                        this.props.ToggleUpload(false)
+                                    }
+                                }>
                                     Send
                                 </Button>
                             </DialogActions>
@@ -144,4 +162,14 @@ class ImageUpload extends Component{
     }
 }
 
-export default ImageUpload
+const matchStateToProps = (state) => {
+    return{
+        Message:state.Message
+    }
+}
+
+const matchDispatchToProps = (dispatch) => {
+
+}
+
+export default connect(matchStateToProps,matchDispatchToProps)(ImageUpload)

@@ -6,15 +6,14 @@ export default function MessageReducer(state,action){
             }
         break;
         case "UPDATE_MESSAGES":
-            return {
+            return{
                 ...state,
                 Messages:action.payload
             }
         break;
         default:
             return{
-                ...state,
-                Messages:[]
+                ...state
             }
         break;
     }

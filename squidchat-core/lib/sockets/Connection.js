@@ -29,8 +29,11 @@ let Connection = function(io){
         socket.on('JoinSessionRequest',(User) => {
             this.Users.push({
                 _id:User._id,
-                Username:User.Username
+                Username:User.Username,
+                SocketId:socket.id
             })
+
+            io.emit('JoinedUser',User)
         })
 
         //Listen for messages here,
@@ -40,6 +43,22 @@ let Connection = function(io){
 
             //Next we want to emit all the messages to everyone in the chat.
             io.emit('IncomingMessage',Message)
+        })
+
+        socket.on('ImageMessageSent',(Message) => {
+            Message._id = this.Messages.length;
+            this.Messages.push(Message)
+
+            //Next we want to emit all the messages to everyone in the chat.
+            io.emit('IncomingMessage',Message)
+        })
+
+        socket.on('disconnect',() => {
+            for(let i = 0;i < this.Users.length;i++){
+                if(this.Users[i].SocketId == socket.id){
+                    this.Users.splice(i,1);
+                }
+            }
         })
     });
 

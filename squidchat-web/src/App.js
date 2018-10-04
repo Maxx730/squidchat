@@ -22,10 +22,11 @@ import DialogActions from '@material-ui/core/DialogActions'
 import Snackbar from '@material-ui/core/Snackbar'
 import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 import cookie from 'react-cookies'
-
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { connect } from 'react-redux'
-import { CreateUser,CheckLogin,GetFromHash } from './actions/UserActions'
+import { CreateUser,CheckLogin,GetFromHash,UpdateUserList } from './actions/UserActions'
 import { UpdateMessages } from './actions/MessageActions'
+import { UpdateMessage,ResetMessage } from './actions/ComposeActions'
 
 //import connections
 import Connector from './api/Connector'
@@ -49,9 +50,11 @@ class App extends Component {
     super(props)
 
     this.state = {
-      Connector:new Connector(this.MessageCallback),
+      Connector:new Connector(this.MessageCallback,this.UserCallback),
       UploadOpen:false,
-      EmojiOpen:false
+      EmojiOpen:false,
+      CheckingCookies:true,
+      ShowSettings:false
     }
   }
 
@@ -63,34 +66,59 @@ class App extends Component {
       this.props.GetHashInfo(cookie.load("SquidChatHash"),() => {
         this.state.Connector.JoinSession(this.props.User)
       })
+    }else{
+      this.setState({
+        CheckingCookies:false
+      })
     }
+
+    this.props.UpdateMessages([])
   }
 
 
   render() {
     if(!this.props.User.LoggedIn){
-      return(
-        <ChatPrompt SignUp={this.props.SignUpUser} Login={this.props.CheckLogin}/>
-      )
+      if(this.state.CheckingCookies){
+        return(
+          <CircularProgress size={50} />
+        )
+      }else{
+        return(
+          <ChatPrompt SignUp={this.props.SignUpUser} Login={this.props.CheckLogin}/>
+        )
+      }
     }else{
       return (
         <div className="App">
           <AppBar/>
 
           {
-            this.state.UploadOpen && <ImageUpload ToggleUpload={this.ToggleUpload.bind(this)}/>
+            this.state.UploadOpen && <ImageUpload Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector} ToggleUpload={this.ToggleUpload.bind(this)}/>
           }
 
           {
             this.state.EmojiOpen && <EmojiModal ToggleEmoji={this.ToggleEmoji.bind(this)}/>
           }
 
+          <SettingsDialog Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
           <MessageList Messages={this.props.Messages.Messages}></MessageList>
-          <InputControls ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
-          <ChatInput User={this.props.User} Connector={this.state.Connector}/>
+          <InputControls ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
+          <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
         </div>
       );
     }
+  }
+
+  ToggleSettings(val){
+    this.setState({
+      ShowSettings:val
+    })
+  }
+
+  //After a message has been sent we want to scroll down to the
+  //end of the list.
+  ScrollDown(ScrollTo){
+    window.scrollTo(0,ScrollTo.offsetTop + 300)
   }
 
   ToggleUpload(val){
@@ -108,12 +136,18 @@ class App extends Component {
   MessageCallback = (Messages) => {
     this.props.UpdateMessages(Messages)
   }
+
+  UserCallback = (Users) => {
+    this.props.UpdateUsers(Users)
+  }
 }
 
 const mapStateToProps = (state) => {
   return{
     User:state.User,
-    Messages:state.Messages
+    Messages:state.Messages,
+    Users:state.Users,
+    Message:state.Message
   }
 }
 
@@ -130,6 +164,15 @@ const mapDispatchToProps = (dispatch) => {
     },
     UpdateMessages: (Messages) => {
       UpdateMessages(dispatch,Messages)
+    },
+    UpdateUsers: (Users) => {
+      UpdateUserList(dispatch,Users)
+    },
+    UpdateMessage: (Message) => {
+      UpdateMessage(dispatch,Message)
+    },
+    ResetMessage: () => {
+        ResetMessage(dispatch)
     }
   }
 }
