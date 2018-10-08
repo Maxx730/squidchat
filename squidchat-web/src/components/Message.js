@@ -44,7 +44,7 @@ class Message extends Component{
                             }
                         </b>
                     {
-                        this.CompileEmojis(Message.Message)
+                       this.DetermineActions(Message.Message)
                     }
                     </ListItemText>
                 )
@@ -73,12 +73,24 @@ class Message extends Component{
                 }
             }
 
-            console.log(FinalMessage)
             return <div>{FinalMessage}</div>
         }else{
             FinalMessage.push(Message)
             return <div>{FinalMessage}</div>
         }
+    }
+
+    DetermineActions(Message){
+        let finalMessage = "";
+
+        if(Message.indexOf("<yell>") > -1){
+            let split = Message.split("<yell>")
+            finalMessage = <div className="YellText">{split[1]}</div>
+        }else{
+            finalMessage = Message
+        }
+
+        return finalMessage
     }
 }
 

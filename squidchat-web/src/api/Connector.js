@@ -2,7 +2,7 @@ import openSocket from 'socket.io-client';
 
 const socket = openSocket("http://localhost:3001");
 
-let Connector = function(MessageCallback,UserCallback){
+let Connector = function(MessageCallback,UserCallback,NotificationCallback){
     console.log("INITIALIZING SOCKET CONNECTION...")
 
     this.Messages = new Array();
@@ -17,6 +17,7 @@ let Connector = function(MessageCallback,UserCallback){
     socket.on('JoinedUser',(User) => {
         this.Users.push(User);
         UserCallback(this.Users)
+        NotificationCallback(User.Username)
     })
 }
 

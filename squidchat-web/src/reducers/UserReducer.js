@@ -20,6 +20,12 @@ export default function UserReducer(state,action){
                 LoginError:true
             }
         break;
+        case "USER_LOGGED_OUT":
+            return{
+                ...state,
+                LoggedIn:false
+            }
+        break;
         default:
             return{
                 ...state

@@ -66,3 +66,9 @@ export function UpdateUserList(dispatch,Users){
         payload:Users
     })
 }
+
+export function Logout(dispatch){
+    dispatch({
+        type:"USER_LOGGED_OUT"
+    })
+}

@@ -24,7 +24,7 @@ import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 import cookie from 'react-cookies'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { connect } from 'react-redux'
-import { CreateUser,CheckLogin,GetFromHash,UpdateUserList } from './actions/UserActions'
+import { CreateUser,CheckLogin,GetFromHash,UpdateUserList,Logout } from './actions/UserActions'
 import { UpdateMessages } from './actions/MessageActions'
 import { UpdateMessage,ResetMessage } from './actions/ComposeActions'
 
@@ -43,6 +43,20 @@ import ChatPrompt from './components/ChatPrompt'
 import InputControls from './components/InputControls'
 import ImageUpload from './components/ImageUpload'
 import EmojiModal from './components/EmojiModal'
+import TopPanel from './components/TopPanel'
+import LogoutModal from './components/LogoutModal'
+import Notification from './components/Notification'
+import YoutubePopup from './components/YoutubePopup'
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
+
+const theme = createMuiTheme({
+    pallete:{
+        primary:{
+          main:"#00FF00"
+        }
+    }
+})
+
 
 class App extends Component {
 
@@ -50,11 +64,15 @@ class App extends Component {
     super(props)
 
     this.state = {
-      Connector:new Connector(this.MessageCallback,this.UserCallback),
+      Connector:new Connector(this.MessageCallback,this.UserCallback,this.ShowNotification.bind(this)),
       UploadOpen:false,
       EmojiOpen:false,
       CheckingCookies:true,
-      ShowSettings:false
+      ShowSettings:false,
+      LogoutOpen:false,
+      ShowNotification:false,
+      NotificationUsername:"",
+      ShowYTPop:false
     }
   }
 
@@ -89,22 +107,23 @@ class App extends Component {
       }
     }else{
       return (
-        <div className="App">
-          <AppBar/>
+        <MuiThemeProvider theme={theme}>
+            <TopPanel OpenLogout={this.ToggleLogout.bind(this)}/>
+            <LogoutModal Logout={this.LogoutUser.bind(this)} LogoutOpen={this.state.LogoutOpen} Close={this.ToggleLogout.bind(this)}/>
+            {
+              this.state.UploadOpen && <ImageUpload Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector} ToggleUpload={this.ToggleUpload.bind(this)}/>
+            }
 
-          {
-            this.state.UploadOpen && <ImageUpload Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector} ToggleUpload={this.ToggleUpload.bind(this)}/>
-          }
-
-          {
-            this.state.EmojiOpen && <EmojiModal ToggleEmoji={this.ToggleEmoji.bind(this)}/>
-          }
-
-          <SettingsDialog Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
-          <MessageList Messages={this.props.Messages.Messages}></MessageList>
-          <InputControls ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
-          <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
-        </div>
+            {
+              this.state.EmojiOpen && <EmojiModal ToggleEmoji={this.ToggleEmoji.bind(this)}/>
+            }
+            <YoutubePopup/>
+            <Notification Name={this.state.NotificationUsername} open={this.state.ShowNotification}/>
+            <SettingsDialog Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
+            <MessageList Messages={this.props.Messages.Messages}></MessageList>
+            <InputControls ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
+            <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
+        </MuiThemeProvider>
       );
     }
   }
@@ -130,6 +149,35 @@ class App extends Component {
   ToggleEmoji(val){
     this.setState({
       EmojiOpen:val
+    })
+  }
+
+  ToggleLogout(val){
+    this.setState({
+      LogoutOpen:val
+    })
+  }
+
+  ShowNotification(Username){
+    let context = this;
+    this.setState({
+      ShowNotification:true,
+      NotificationUsername:Username
+    },() => {
+      setTimeout(function(){
+        context.setState({
+          ShowNotification:false
+        })
+      },2000)
+    })
+  }
+
+  LogoutUser(){
+    cookie.remove("SquidChatHash")
+    this.props.Logout()
+    this.setState({
+      LogoutOpen:false,
+      CheckingCookies:false
     })
   }
 
@@ -173,6 +221,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     ResetMessage: () => {
         ResetMessage(dispatch)
+    },
+    Logout: () => {
+      Logout(dispatch)
     }
   }
 }

@@ -20,7 +20,8 @@ class ImageUpload extends Component{
         this.state = {
             isLoading:false,
             ImageURL:"",
-            ActiveStep:0
+            ActiveStep:0,
+            UploadActive:true
         }
     }
 
@@ -59,7 +60,8 @@ class ImageUpload extends Component{
                             <input onClick={
                               () => {
                                   this.setState({
-                                      ActiveStep:this.state.ActiveStep+1
+                                      ActiveStep:this.state.ActiveStep+1,
+                                      UploadActive:false
                                   })
                               }
                             } ref={
@@ -71,7 +73,7 @@ class ImageUpload extends Component{
                     </DialogContentText>
                     }
                     {
-                        this.state.isLoading && <CircularProgress/>
+                        this.state.isLoading && <center><CircularProgress/></center>
                     }
                     {
                         this.state.ImageURL != "" && <div>
@@ -123,7 +125,7 @@ class ImageUpload extends Component{
                         }>
                             Cancel
                         </Button>
-                        <Button variant="outlined" onClick={
+                        <Button disabled={this.state.UploadActive} variant="outlined" onClick={
                             () => {
                                 this.UploadImage()
                                 this.setState({
