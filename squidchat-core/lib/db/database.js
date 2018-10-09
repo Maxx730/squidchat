@@ -5,7 +5,7 @@ let DatabaseConnection = function(){
     this.conn = mysql.createConnection({
         host:'localhost',
         user:'root',
-        password:'',
+        password:'dRmario',
         database:'squidchat'
     });
 
