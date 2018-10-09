@@ -24,7 +24,7 @@ let Connection = require('./lib/sockets/Connection')(socketio);
 const conn = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'',
+    password:'dRmario',
     database:'squidchat'
 });
 
