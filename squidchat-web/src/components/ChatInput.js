@@ -37,19 +37,17 @@ class ChatInput extends Component{
                     <InputAdornment>
                         <Button className="SendText" variant="outlined" color="primary" onClick={
                             () => {
-                                if(this.state.MessageInput != ""){
+                                if(this.state.Message.Message != ""){
                                     this.state.Connector.SendMessage({
                                         User:{
                                             _id:this.props.User._id,
                                             Username:this.props.User.Username
                                         },
-                                        Message:this.state.MessageInput,
+                                        Message:this.props.Message.Message,
                                         Type:"standard"
                                     })
 
-                                    this.setState({
-                                        MessageInput:""
-                                    })
+                                    this.props.ResetMessage()
                                 }else{
                                     this.setState({
                                         ShowErrorDialog:true

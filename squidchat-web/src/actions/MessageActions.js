@@ -1,5 +1,4 @@
 export function AddMessage(dispatch,Message){
-    console.log(Message)
     dispatch({
         type:"ADD_MESSAGE",
         payload:Message
