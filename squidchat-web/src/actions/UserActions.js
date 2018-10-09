@@ -39,7 +39,7 @@ export function CheckLogin(dispatch,User){
 }
 
 export function GetFromHash(dispatch,hash,callback){
-    fetch('http://localhost:3000/hash/check',{
+    fetch('http://squidswap.com:3000/hash/check',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify({
