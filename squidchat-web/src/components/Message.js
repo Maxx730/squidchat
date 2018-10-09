@@ -38,11 +38,6 @@ class Message extends Component{
             default:
                 return(
                     <ListItemText>
-                        <b>
-                            {
-                                Message.User.Username + ":  "
-                            }
-                        </b>
                     {
                        this.DetermineActions(Message)
                     }
@@ -89,8 +84,11 @@ class Message extends Component{
             if(Message.Message.indexOf("<yell>") > -1){
                 let split = Message.Message.split("<yell>")
                 finalMessage = <div className="YellText">{split[1]}</div>
+            }else if(Message.Message.indexOf("<tele>") > -1){
+                let split = Message.Message.split("<tele>")
+                finalMessage = <center><i><div className="TeleportsText">{Message.User.Username} teleports behind {split[1]}, heh nothin personel kid.</div></i></center>
             }else{
-                finalMessage = Message.Message
+                finalMessage = <div><b>{Message.User.Username + ":  "}</b>{this.CompileEmojis(Message.Message)}</div>
             }
         }
 
