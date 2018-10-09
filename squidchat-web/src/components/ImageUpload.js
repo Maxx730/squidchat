@@ -83,7 +83,7 @@ class ImageUpload extends Component{
                                 </p>
                             </DialogContentText>
                             <center className="RoundedSendPort">
-                                <img src = {"http://localhost:3000/"+this.state.ImageURL} width="200"/>
+                                <img src = {"http://squidswap.com:3000/"+this.state.ImageURL} width="200"/>
                             </center>
                             <DialogActions>
                                 <Button onClick={
@@ -146,7 +146,7 @@ class ImageUpload extends Component{
         data.append('file',this.UploadFile.files[0])
 
 
-        fetch('http://localhost:3000/upload/image',{
+        fetch('http://squidswap.com:3000/upload/image',{
             method:"POST",
             body:data
         }).then((response) => {

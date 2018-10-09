@@ -31,7 +31,7 @@ class Message extends Component{
             case "image":
                 return(
                     <div className="ImageMessage">
-                        <img src = {"http://localhost:3000/"+Message.Image.Url} width="200"/>
+                        <img src = {"http://squidswap.com:3000/"+Message.Image.Url} width="200"/>
                     </div>
                 )
             break;
