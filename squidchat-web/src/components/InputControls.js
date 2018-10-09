@@ -33,7 +33,11 @@ class InputControls extends Component{
                     </Button>
                 </ToolTip>
                 <ToolTip title="Link Youtube" placement="top">
-                    <Button variant="outlined" className="push-control-right">
+                    <Button variant="outlined" className="push-control-right" onClick={
+                        () => {
+                            this.props.ToggleYoutube(true)
+                        }
+                    }>
                         <MovieRounded color="disabled"/>
                     </Button>
                 </ToolTip>

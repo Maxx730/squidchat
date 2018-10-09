@@ -117,11 +117,11 @@ class App extends Component {
             {
               this.state.EmojiOpen && <EmojiModal ToggleEmoji={this.ToggleEmoji.bind(this)}/>
             }
-            <YoutubePopup/>
+            <YoutubePopup Connector={this.state.Connector} Open={this.state.ShowYTPop} Toggle={this.ToggleYTPopup.bind(this)}/>
             <Notification Name={this.state.NotificationUsername} open={this.state.ShowNotification}/>
             <SettingsDialog Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
             <MessageList Messages={this.props.Messages.Messages}></MessageList>
-            <InputControls ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
+            <InputControls ToggleYoutube={this.ToggleYTPopup.bind(this)} ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
             <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
         </MuiThemeProvider>
       );
@@ -155,6 +155,12 @@ class App extends Component {
   ToggleLogout(val){
     this.setState({
       LogoutOpen:val
+    })
+  }
+
+  ToggleYTPopup(val){
+    this.setState({
+      ShowYTPop:val
     })
   }
 

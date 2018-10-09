@@ -2,3 +2,14 @@
     width:300px!important;
     margin:0 auto;
 }
+
+.LinkError{
+    background:#f44336;
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:5px;
+}
+
+.PopupDescription,.push-up{
+    margin-bottom:16px!important;
+}

@@ -11,6 +11,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListSubHeader from '@material-ui/core/ListSubheader'
 import UserList from './UserList'
 import './css/Settings.css'
+import { connect } from 'react-redux'
 
 class SettingsDialog extends Component{
     constructor(props){
@@ -52,4 +53,16 @@ class SettingsDialog extends Component{
     }
 }
 
-export default SettingsDialog;
+const mapStateToProps = (state) => {
+    return {
+        Users:state.Users
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(SettingsDialog);

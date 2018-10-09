@@ -44,7 +44,7 @@ class Message extends Component{
                             }
                         </b>
                     {
-                       this.DetermineActions(Message.Message)
+                       this.DetermineActions(Message)
                     }
                     </ListItemText>
                 )
@@ -83,11 +83,15 @@ class Message extends Component{
     DetermineActions(Message){
         let finalMessage = "";
 
-        if(Message.indexOf("<yell>") > -1){
-            let split = Message.split("<yell>")
-            finalMessage = <div className="YellText">{split[1]}</div>
+        if(Message.Type == "youtube"){
+            finalMessage = <iframe width="280" height="157" src={"https://www.youtube.com/embed/" + Message.YoutubeId} frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         }else{
-            finalMessage = Message
+            if(Message.Message.indexOf("<yell>") > -1){
+                let split = Message.Message.split("<yell>")
+                finalMessage = <div className="YellText">{split[1]}</div>
+            }else{
+                finalMessage = Message.Message
+            }
         }
 
         return finalMessage
