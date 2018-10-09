@@ -1,6 +1,6 @@
 import openSocket from 'socket.io-client';
 
-const socket = openSocket();
+const socket = openSocket("http://squidswap.com:3000");
 
 let Connector = function(MessageCallback,UserCallback,NotificationCallback){
     console.log("INITIALIZING SOCKET CONNECTION...")
