@@ -1,7 +1,7 @@
 import cookie from 'react-cookies'
 
 export function CreateUser(dispatch,User){
-    fetch('http://localhost:3000/user/create',{
+    fetch('http://squidswap.com:3000/user/create',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify(User)
@@ -16,7 +16,7 @@ export function CreateUser(dispatch,User){
 }
 
 export function CheckLogin(dispatch,User){
-    fetch('http://localhost:3000/check/login',{
+    fetch('http://squidswap.com:3000/check/login',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify(User)
