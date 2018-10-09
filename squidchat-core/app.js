@@ -100,8 +100,16 @@ app.post('/user/create',(req,res) => {
 app.get('/users',(req,res) => {
     res.set('Content-Type','application/json');
     conn.query("select * from user",(err,result,fields) => {
-        res.json(result)
-        res.end();
+        if(err){
+            res.json({
+                TYPE:"ERROR",
+                ERROR:err
+            })
+            res.end();
+        }else{
+            res.json(result)
+            res.end();
+        }
     })
 })
 
