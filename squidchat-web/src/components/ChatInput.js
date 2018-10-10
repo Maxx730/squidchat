@@ -37,11 +37,12 @@ class ChatInput extends Component{
                     <InputAdornment>
                         <Button className="SendText" variant="outlined" color="primary" onClick={
                             () => {
-                                if(this.state.Message.Message != ""){
+                                if(this.props.Message.Message != ""){
                                     this.state.Connector.SendMessage({
                                         User:{
                                             _id:this.props.User._id,
-                                            Username:this.props.User.Username
+                                            Username:this.props.User.Username,
+                                            Nickname:this.props.User.Nickname
                                         },
                                         Message:this.props.Message.Message,
                                         Type:"standard"
@@ -63,7 +64,8 @@ class ChatInput extends Component{
                         this.props.UpdateMessage({
                             User:{
                                 _id:this.props.User._id,
-                                Username:this.props.User.Username
+                                Username:this.props.User.Username,
+                                Nickname:this.props.User.Nickname
                             },
                             Message:event.target.value,
                             Type:"standard"
@@ -79,7 +81,8 @@ class ChatInput extends Component{
                             this.state.Connector.SendMessage({
                                 User:{
                                     _id:this.props.User._id,
-                                    Username:this.props.User.Username
+                                    Username:this.props.User.Username,
+                                    Nickname:this.props.User.Nickname
                                 },
                                 Message:this.props.Message.Message,
                                 Type:"standard"

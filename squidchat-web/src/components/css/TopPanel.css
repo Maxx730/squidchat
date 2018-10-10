@@ -11,3 +11,9 @@
 .LogoutButton{
     float:right;
 }
+
+.ChatTitle{
+    background:red;
+    margin:0 auto!important;
+    width:20%;
+}

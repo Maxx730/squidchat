@@ -11,7 +11,8 @@ export default function UserReducer(state,action){
                 ...state,
                 Username:action.payload.Username,
                 _id:action.payload._id,
-                LoggedIn:true
+                LoggedIn:true,
+                Nickname:action.payload.Nickname
             }
         break;
         case "SET_LOGIN_ERROR":

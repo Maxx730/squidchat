@@ -27,13 +27,15 @@ let Connection = function(io){
         //Whenever a user joins the chatroom they need to request to be added to
         //the session i.e the array of joined users.
         socket.on('JoinSessionRequest',(User) => {
+
             this.Users.push({
                 _id:User._id,
                 Username:User.Username,
-                SocketId:socket.id
+                SocketId:socket.id,
+                Nickname:User.Nickname
             })
 
-            io.emit('JoinedUser',User)
+            io.emit('JoinedUser',{Users:this.Users,User:User})
         })
 
         //Listen for messages here,
@@ -51,6 +53,11 @@ let Connection = function(io){
 
             //Next we want to emit all the messages to everyone in the chat.
             io.emit('IncomingMessage',Message)
+        })
+
+        socket.on('RefreshUsers',(Users) => {
+            this.Users = Users.Users
+            io.emit('UserList',this.Users)
         })
 
         socket.on('disconnect',() => {

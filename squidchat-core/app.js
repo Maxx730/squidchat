@@ -13,8 +13,16 @@ app.use(body.json());
 app.use(fileUpload())
 app.use('/upload', express.static(path.join(__dirname, 'squidchat_upload')))
 
+process.env.SQUIDCHAT_ENVIROMENT = "localhost"
+
+if(process.env.SQUIDCHAT_ENVIROMENT == "localhost"){
+
+}else{
+
+}
+
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://squidswap.com:3002");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header('Access-Control-Allow-Credentials', 'true')
     next();
@@ -25,13 +33,13 @@ let Connection = require('./lib/sockets/Connection')(socketio);
 const conn = mysql.createConnection({
     host:'localhost',
     user:'root',
-    password:'dRmario',
+    password:'',
     database:'squidchat'
 });
 
 app.post("/check/login",(req,res) => {
     res.set('Content-Type','application/json');
-    conn.query("select _id,username,hash from user where username='"+req.body.Username+"' and password='"+req.body.Password+"'",(err,result,fields) => {
+    conn.query("select _id,username,hash,nickname from user where username='"+req.body.Username+"' and password='"+req.body.Password+"'",(err,result,fields) => {
         if(!err){
             if(result.length > 0){
                 res.json({
@@ -117,7 +125,7 @@ app.get('/users',(req,res) => {
 app.post('/hash/check',(req,res) => {
     res.set('Content-Type','application/json');
 
-    conn.query("select username,_id from user where hash='"+req.body.hash+"'",(err,result,fields) => {
+    conn.query("select username,_id,nickname from user where hash='"+req.body.hash+"'",(err,result,fields) => {
         if(!err){
             if(result.length > 0){
                 res.json({
@@ -144,7 +152,6 @@ app.post('/hash/check',(req,res) => {
 app.post('/upload/image',(req,res) => {
     res.set('Content-Type','application/json')
     let image = req.files.file;
-    console.log(__dirname)
     let hash = crypto.createHash('md5').update(req.files.file.name).digest('hex');
 
     image.mv('squidchat_upload/'+hash+'.jpg',(err) => {
@@ -164,6 +171,26 @@ app.post('/upload/image',(req,res) => {
         }
 
         res.end()
+    })
+})
+
+app.post('/update/nickname',(req,res) => {
+    res.set('Content-Type','application/json')
+    conn.query("update user set nickname='"+req.body.Nickname+"' where _id="+req.body._id,(err,result,fields) => {
+        if(!err){
+            res.json({
+                TYPE:"SUCCESS",
+                MESSAGE:"UPDATED NICKNAME"
+            })
+            res.end()
+        }else{
+            res.json({
+                TYPE:"ERROR",
+                ERROR:err
+            })
+
+            res.end()
+        }
     })
 })
 

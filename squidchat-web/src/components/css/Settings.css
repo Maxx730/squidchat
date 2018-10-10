@@ -1,3 +1,17 @@
 .LongText{
     margin-top:20px!important;
 }
+
+.SettingsDialog{
+
+}
+
+.UserList{
+    border-top:solid 1px #DBDBDB;
+    padding:0px!important;
+}
+
+.SaveNickname{
+    margin-left:10px!important;
+    margin-top:13px!important;
+}

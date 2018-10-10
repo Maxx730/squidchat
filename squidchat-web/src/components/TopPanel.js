@@ -4,6 +4,7 @@ import IconButton from '@material-ui/core/IconButton'
 import './css/TopPanel.css'
 import MeetingRoomRounded from '@material-ui/icons/MeetingRoomRounded'
 import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
 
 class TopPanel extends Component{
     render() {

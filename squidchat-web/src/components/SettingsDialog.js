@@ -12,30 +12,71 @@ import ListSubHeader from '@material-ui/core/ListSubheader'
 import UserList from './UserList'
 import './css/Settings.css'
 import { connect } from 'react-redux'
+import { UpdateNickname } from '../actions/UserActions'
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 class SettingsDialog extends Component{
     constructor(props){
         super(props)
 
         this.state = {
-            NewUsername:this.props.User.Username
+            NewUsername:this.props.User.Username,
+            NameIndex:null,
+            NewNickname:""
         }
     }
     render(){
         return(
-            <Dialog open={this.props.IsOpen} scroll="paper">
+            <Dialog open={this.props.IsOpen} scroll="paper" className="SettingsDialog">
                 <DialogTitle>
                     Preferences
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    <FormControlLabel label="SFW Mode" control={
+                        <Switch/>
+                    }>
 
-                    </DialogContentText>
+                    </FormControlLabel>
                 </DialogContent>
+                <List className="UserList">
+                    {
+                        this.props.Users.Users.map((User,index) => {
+                            return <ListItem button key={index} divider onClick={
+                                () => {
+                                    this.setState({
+                                        NameIndex:index,
+                                        NewNickname:User.Nickname
+                                    })
+                                }
+                            }>{
+                                this.state.NameIndex == index ? <div><TextField onChange={
+                                    (evt) => {
+                                        this.setState({
+                                            NewNickname:evt.target.value
+                                        })
+                                    }
+                                } variant="outlined" value={this.state.NewNickname} label="Nickname" margin="dense"/><Button variant="outlined" className="SaveNickname" onClick={
+                                    () => {
+                                        let NewUser = User;
+                                        NewUser.Nickname = this.state.NewNickname
+                                        UpdateNickname(NewUser,() => {
+                                            this.props.Connector.RefreshUsers(this.props.Users);
+                                        })
+                                    }
+                                }>Save</Button></div> : User.Username
+                            }</ListItem>
+                        })
+                    }
+                </List>
                 <DialogActions>
                     <Button variant="outlined" onClick={
                         () => {
                             this.props.Open(false)
+                            this.setState({
+                                NameIndex:null
+                            })
                         }
                     }>
                         Cancel
@@ -55,7 +96,8 @@ class SettingsDialog extends Component{
 
 const mapStateToProps = (state) => {
     return {
-        Users:state.Users
+        Users:state.Users,
+        User:state.User
     }
 }
 

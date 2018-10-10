@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider'
 import { Avatar, ListItem } from '@material-ui/core';
 import './css/Message.css'
 import Youtube from 'react-youtube'
+import Tooltip from '@material-ui/core/Tooltip'
 
 class Message extends Component{
     constructor(props){
@@ -31,7 +32,7 @@ class Message extends Component{
             case "image":
                 return(
                     <div className="ImageMessage">
-                        <img src = {"http://squidswap.com:3000/"+Message.Image.Url} width="200"/>
+                        <img src = {"http://localhost:3000/"+Message.Image.Url} width="200"/>
                     </div>
                 )
             break;
@@ -88,7 +89,7 @@ class Message extends Component{
                 let split = Message.Message.split("<tele>")
                 finalMessage = <center><i><div className="TeleportsText">{Message.User.Username} teleports behind {split[1]}, heh nothin personel kid.</div></i></center>
             }else{
-                finalMessage = <div><b>{Message.User.Username + ":  "}</b>{this.CompileEmojis(Message.Message)}</div>
+                finalMessage = <div><Tooltip title={this.props.Message.User.Username} placement="bottom"><b>{(this.props.Message.User.Nickname == "" || this.props.Message.User.Nickname == null) ? Message.User.Username + ":  " :  Message.User.Nickname + ":  "}</b></Tooltip>{this.CompileEmojis(Message.Message)}</div>
             }
         }
 

@@ -15,6 +15,7 @@ const InitialState = {
     User:{
         _id:0,
         Username:"",
+        Nickname:"",
         LoggedIn:false,
         CookieSet:false,
         LoginError:false
@@ -25,7 +26,10 @@ const InitialState = {
         }
     },
     Messages:[],
-    Users:[],
+    Users:{
+        Users:[],
+        Loaded:false
+    },
     Message:{}
 }
 

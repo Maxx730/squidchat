@@ -3,7 +3,8 @@ export default function UserListReducer(state,action){
         case "UPDATE_LIST":
             return{
                 ...state,
-                Users:action.payload
+                Users:action.payload,
+                Loaded:true
             }
         break;
         default:

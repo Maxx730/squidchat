@@ -24,7 +24,7 @@ import VpnKeyRounded from '@material-ui/icons/VpnKeyRounded'
 import cookie from 'react-cookies'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { connect } from 'react-redux'
-import { CreateUser,CheckLogin,GetFromHash,UpdateUserList,Logout } from './actions/UserActions'
+import { CreateUser,CheckLogin,GetFromHash,UpdateUserList,Logout,RefreshUser } from './actions/UserActions'
 import { UpdateMessages } from './actions/MessageActions'
 import { UpdateMessage,ResetMessage } from './actions/ComposeActions'
 
@@ -119,7 +119,7 @@ class App extends Component {
             }
             <YoutubePopup Connector={this.state.Connector} Open={this.state.ShowYTPop} Toggle={this.ToggleYTPopup.bind(this)}/>
             <Notification Name={this.state.NotificationUsername} open={this.state.ShowNotification}/>
-            <SettingsDialog Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
+            <SettingsDialog Connector={this.state.Connector} Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
             <MessageList Messages={this.props.Messages.Messages}></MessageList>
             <InputControls ToggleYoutube={this.ToggleYTPopup.bind(this)} ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
             <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
@@ -192,6 +192,12 @@ class App extends Component {
   }
 
   UserCallback = (Users) => {
+    for(let i = 0;i < Users.length;i++){
+      if(Users[i]._id == this.props.User._id){
+        this.props.UpdateUser(Users[i])
+      }
+    }
+
     this.props.UpdateUsers(Users)
   }
 }
@@ -230,6 +236,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     Logout: () => {
       Logout(dispatch)
+    },
+    UpdateUser: (User) => {
+      RefreshUser(dispatch,User)
     }
   }
 }

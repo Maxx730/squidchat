@@ -5,7 +5,7 @@ let DatabaseConnection = function(){
     this.conn = mysql.createConnection({
         host:'localhost',
         user:'root',
-        password:'dRmario',
+        password:'',
         database:'squidchat'
     });
 
@@ -60,6 +60,10 @@ DatabaseConnection.prototype.CreateUser = function(User,callback){
             });
         }
     })
+}
+
+DatabaseConnection.prototype.UpdateNickname = function(User,callback){
+
 }
 
 module.exports = DatabaseConnection;

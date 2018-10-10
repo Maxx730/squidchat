@@ -1,6 +1,6 @@
 import openSocket from 'socket.io-client';
 
-const socket = openSocket("http://squidswap.com:3001");
+const socket = openSocket("http://localhost:3001");
 
 let Connector = function(MessageCallback,UserCallback,NotificationCallback){
     console.log("INITIALIZING SOCKET CONNECTION...")
@@ -14,10 +14,15 @@ let Connector = function(MessageCallback,UserCallback,NotificationCallback){
         MessageCallback(this.Messages)
     })
 
-    socket.on('JoinedUser',(User) => {
-        this.Users.push(User);
+    socket.on('JoinedUser',(payload) => {
+        this.Users = payload.Users
         UserCallback(this.Users)
-        NotificationCallback(User.Username)
+        NotificationCallback(payload.User.Username)
+    })
+
+    socket.on('UserList',(Users) => {
+        this.Users = Users;
+        UserCallback(this.Users)
     })
 }
 
@@ -31,6 +36,10 @@ Connector.prototype.SendMessage = (Message) => {
 
 Connector.prototype.SendImage = (Message) => {
     socket.emit('ImageMessageSent',Message)
+}
+
+Connector.prototype.RefreshUsers = (Users) => {
+    socket.emit('RefreshUsers',Users)
 }
 
 export default Connector

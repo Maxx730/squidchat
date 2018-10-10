@@ -1,7 +1,7 @@
 import cookie from 'react-cookies'
 
 export function CreateUser(dispatch,User){
-    fetch('http://squidswap.com:3000/user/create',{
+    fetch('http://localhost:3000/user/create',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify(User)
@@ -16,12 +16,14 @@ export function CreateUser(dispatch,User){
 }
 
 export function CheckLogin(dispatch,User){
-    fetch('http://squidswap.com:3000/check/login',{
+    fetch('http://localhost:3000/check/login',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify(User)
     }).then(response => response.json()).then(data => {
         if(data.TYPE == "SUCCESS"){
+
+            console.log(data)
 
             cookie.save("SquidChatHash",data.PAYLOAD.hash)
 
@@ -39,7 +41,7 @@ export function CheckLogin(dispatch,User){
 }
 
 export function GetFromHash(dispatch,hash,callback){
-    fetch('http://squidswap.com:3000/hash/check',{
+    fetch('http://localhost:3000/hash/check',{
         method:"post",
         headers: {'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -51,11 +53,23 @@ export function GetFromHash(dispatch,hash,callback){
                 type:"UPDATE_USER_INFO",
                 payload:{
                     _id:data.PAYLOAD._id,
-                    Username:data.PAYLOAD.username
+                    Username:data.PAYLOAD.username,
+                    Nickname:data.PAYLOAD.nickname
                 }
             })
 
             callback()
+        }
+    })
+}
+
+export function RefreshUser(dispatch,User){
+    dispatch({
+        type:"UPDATE_USER_INFO",
+        payload:{
+            _id:User._id,
+            Username:User.Username,
+            Nickname:User.Nickname
         }
     })
 }
@@ -70,5 +84,17 @@ export function UpdateUserList(dispatch,Users){
 export function Logout(dispatch){
     dispatch({
         type:"USER_LOGGED_OUT"
+    })
+}
+
+export function UpdateNickname(User,callback){
+    fetch('http://localhost:3000/update/nickname',{
+        method:"POST",
+        headers: {'Content-Type':'application/json'},
+        body:JSON.stringify(User)
+    }).then(result => result.json()).then(data => {
+        if(data.TYPE == "SUCCESS"){
+            callback()
+        }
     })
 }
