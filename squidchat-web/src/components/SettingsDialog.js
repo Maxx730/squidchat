@@ -16,6 +16,7 @@ import { UpdateNickname } from '../actions/UserActions'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Avatar from '@material-ui/core/Avatar'
 
 class SettingsDialog extends Component{
     constructor(props){
@@ -29,18 +30,27 @@ class SettingsDialog extends Component{
     }
     render(){
         return(
-            <Dialog open={this.props.IsOpen} scroll="paper" className="SettingsDialog">
+            <Dialog open={this.props.IsOpen}>
                 <DialogTitle>
                     Preferences
                 </DialogTitle>
-                <DialogContent>
-                    <FormControlLabel label="SFW Mode" control={
-                        <Switch/>
-                    }>
-
-                    </FormControlLabel>
+                <DialogContent className="SettingsDialog">
+                    <Avatar onClick={
+                        () => {
+                            this.props.ToggleImageUpload(true,"profile")
+                        }
+                    } button>
+                        MK
+                    </Avatar>
                 </DialogContent>
                 <List className="UserList">
+                    <ListItem divider>
+                        <FormControlLabel label="SFW Mode" control={
+                            <Switch/>
+                        }>
+
+                        </FormControlLabel>
+                    </ListItem>
                     {
                         this.props.Users.Users.map((User,index) => {
                             return <ListItem button key={index} divider onClick={
@@ -63,6 +73,7 @@ class SettingsDialog extends Component{
                                         NewUser.Nickname = this.state.NewNickname
                                         UpdateNickname(NewUser,() => {
                                             this.props.Connector.RefreshUsers(this.props.Users);
+                                            this.props.Open(false)
                                         })
                                     }
                                 }>Save</Button></div> : User.Username

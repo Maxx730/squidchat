@@ -42,11 +42,9 @@ class ImageUpload extends Component{
                             Upload
                         </StepLabel>
                     </Step>
-                    <Step>
-                        <StepLabel>
-                            Send
-                        </StepLabel>
-                    </Step>
+                    {
+                        this.props.Context == "profile" ? <Step><StepLabel>Save</StepLabel></Step> : <Step><StepLabel>Send</StepLabel></Step>
+                    }
                 </Stepper>
                 <DialogContent>
                     {

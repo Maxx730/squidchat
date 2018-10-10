@@ -72,7 +72,8 @@ class App extends Component {
       LogoutOpen:false,
       ShowNotification:false,
       NotificationUsername:"",
-      ShowYTPop:false
+      ShowYTPop:false,
+      UploadContext:"messaage"
     }
   }
 
@@ -111,7 +112,7 @@ class App extends Component {
             <TopPanel OpenLogout={this.ToggleLogout.bind(this)}/>
             <LogoutModal Logout={this.LogoutUser.bind(this)} LogoutOpen={this.state.LogoutOpen} Close={this.ToggleLogout.bind(this)}/>
             {
-              this.state.UploadOpen && <ImageUpload Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector} ToggleUpload={this.ToggleUpload.bind(this)}/>
+              this.state.UploadOpen && <ImageUpload Context={this.state.UploadContext} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector} ToggleUpload={this.ToggleUpload.bind(this)}/>
             }
 
             {
@@ -119,7 +120,7 @@ class App extends Component {
             }
             <YoutubePopup Connector={this.state.Connector} Open={this.state.ShowYTPop} Toggle={this.ToggleYTPopup.bind(this)}/>
             <Notification Name={this.state.NotificationUsername} open={this.state.ShowNotification}/>
-            <SettingsDialog Connector={this.state.Connector} Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
+            <SettingsDialog ToggleImageUpload={this.ToggleUpload.bind(this)} Connector={this.state.Connector} Open={this.ToggleSettings.bind(this)} IsOpen={this.state.ShowSettings} User={this.props.User}/>
             <MessageList Messages={this.props.Messages.Messages}></MessageList>
             <InputControls ToggleYoutube={this.ToggleYTPopup.bind(this)} ToggleSettings={this.ToggleSettings.bind(this)} ToggleEmoji={this.ToggleEmoji.bind(this)} ToggleUpload={this.ToggleUpload.bind(this)}/>
             <ChatInput Message={this.state.Message} Reset={this.props.ResetMessage} Update={this.props.UpdateMessage} User={this.props.User} Connector={this.state.Connector}/>
@@ -140,10 +141,17 @@ class App extends Component {
     window.scrollTo(0,ScrollTo.offsetTop + 300)
   }
 
-  ToggleUpload(val){
-    this.setState({
-      UploadOpen:val
-    })
+  ToggleUpload(val,context){
+    if(context == "profile"){
+      this.setState({
+        UploadOpen:val,
+        UploadContext:"profile"
+      })
+    }else{
+      this.setState({
+        UploadOpen:val
+      })
+    }
   }
 
   ToggleEmoji(val){

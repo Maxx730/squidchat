@@ -30,7 +30,8 @@ const InitialState = {
         Users:[],
         Loaded:false
     },
-    Message:{}
+    Message:{},
+    Typing:false
 }
 
 const Reducers = combineReducers({

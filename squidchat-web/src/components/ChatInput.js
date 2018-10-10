@@ -68,7 +68,11 @@ class ChatInput extends Component{
                                 Nickname:this.props.User.Nickname
                             },
                             Message:event.target.value,
-                            Type:"standard"
+                            Type:"standard",
+                            Like:{
+                                Amount:0,
+                                By:new Array()
+                            }
                         })
                     }
                 } value={
@@ -85,7 +89,11 @@ class ChatInput extends Component{
                                     Nickname:this.props.User.Nickname
                                 },
                                 Message:this.props.Message.Message,
-                                Type:"standard"
+                                Type:"standard",
+                                Like:{
+                                    Amount:0,
+                                    By:new Array()
+                                }
                             })
 
                             this.props.ResetMessage()
